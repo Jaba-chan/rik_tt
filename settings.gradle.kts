@@ -21,3 +21,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "rik_tt"
 include(":app")
+include(":core")
+include(":feature")
+include(":core:common")
+include(":core:data")
+include(":core:domain")
+include(":feature:statistic")
+include(":core:network")
