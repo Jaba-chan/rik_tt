@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="by_days">По дням</string>
+    <string name="by_weeks">По неделям</string>
+    <string name="by_months">По месяцам</string>
+    <string name="statistics">Статистика</string>
+    <string name="observers">Посетители</string>
+    <string name="count_of_observers_up">Количество посетителей в этом месяце выросло</string>
+    <string name="most_often_visitors">Чаще всех посещают Ваш профиль</string>
+    <string name="sex_and_age">Пол и возраст</string>
+</resources>

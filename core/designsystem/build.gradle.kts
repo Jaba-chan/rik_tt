@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace = "ru.evgenykuzakov.statistic"
-    compileSdk = 35
+    namespace = "ru.evgenykuzakov.designsystem"
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 24
@@ -37,8 +37,6 @@ android {
 }
 
 dependencies {
-    api(project(":core:designsystem"))
-    api(project(":core:domain"))
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
