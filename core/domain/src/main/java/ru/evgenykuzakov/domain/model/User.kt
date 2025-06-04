@@ -5,6 +5,6 @@ data class User(
     val files: List<File>,
     val id: Int,
     val isOnline: Boolean,
-    val sex: String,
+    val sex: Sex,
     val username: String
 )
