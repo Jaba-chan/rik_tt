@@ -1,8 +1,11 @@
 package ru.evgenykuzakov.statistic
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,23 +15,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
+import ru.evgenykuzakov.designsystem.theme.onlineIndicator
+import ru.evgenykuzakov.domain.model.File
+import ru.evgenykuzakov.domain.model.User
 
 
 @Composable
@@ -73,6 +83,23 @@ fun StatisticScreen(
             {},
             true
         )
+        DefaultVerticalSpacer()
+        HeadingCard(
+            headingText = stringResource(R.string.most_often_visitors)
+        ) {
+            UserContent(
+                User(
+                    id = 1,
+                    files = mutableListOf(File(1, "", "")),
+                    age = 25,
+                    sex = "M",
+                    username = "ann.aeom",
+                    isOnline = true
+                )
+            )
+        }
+
+
     }
 
 }
@@ -141,6 +168,17 @@ fun H2Text(
 }
 
 @Composable
+fun Body2Semibold(
+    text: String
+) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMediumSemibold,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
+
+@Composable
 fun HeadingCard(
     headingText: String,
     content: @Composable ColumnScope.() -> Unit
@@ -186,7 +224,7 @@ private fun ObserversContent(
             Row {
                 H2Text(text = observersCount.toString())
                 Spacer(modifier = Modifier.width(2.dp))
-                Icon(
+                Image(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     painter = painterResource(arrowIconRes),
                     contentDescription = null
@@ -202,4 +240,60 @@ private fun ObserversContent(
         }
     }
 }
+
+@Composable
+private fun UserContent(
+    user: User,
+) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box {
+            Image(
+                painter = painterResource(R.drawable.test_avatar),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(CircleShape)
+            )
+            if (user.isOnline) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .align(Alignment.BottomEnd)
+                        .background(
+                            color = MaterialTheme.colorScheme.onlineIndicator,
+                            shape = CircleShape
+                        )
+                        .border(
+                            width = 1.dp,
+                            brush = SolidColor(MaterialTheme.colorScheme.surface),
+                            shape = CircleShape
+                        )
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Body2Semibold(text = "${user.username}, ${user.age}")
+        Spacer(modifier = Modifier.weight(1f))
+        Image(
+            painter = painterResource(R.drawable.ic_arrow),
+            contentDescription = null,
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
