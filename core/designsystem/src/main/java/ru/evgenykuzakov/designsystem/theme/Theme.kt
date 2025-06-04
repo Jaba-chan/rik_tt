@@ -1,6 +1,5 @@
-package ru.evgenykuzakov.rik_tt.ui.theme
+package ru.evgenykuzakov.designsystem.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -15,20 +14,31 @@ private val DarkColorScheme = darkColorScheme(
     primary = Red,
     secondary = Orange,
     tertiary = Green,
-    background = DarkWhite
+    background = DarkWhite,
+    surface = White,
+    onPrimary = White,
+    onBackground = Black,
+    onSurface = Black,
+    outline = OutlineColor
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Red,
     secondary = Orange,
-    tertiary = Green
+    tertiary = Green,
+    background = DarkWhite,
+    surface = White,
+    onPrimary = White,
+    onBackground = Black,
+    onSurface = Black,
+    outline = OutlineColor
 )
 
 @Composable
 fun Rik_ttTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

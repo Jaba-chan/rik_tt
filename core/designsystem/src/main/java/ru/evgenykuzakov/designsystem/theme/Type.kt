@@ -1,4 +1,4 @@
-package ru.evgenykuzakov.rik_tt.ui.theme
+package ru.evgenykuzakov.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
@@ -43,3 +43,11 @@ val Typography = Typography(
         letterSpacing = ( -10 * 0.0011 ).sp
     ),
 )
+
+val Typography.bodyMediumSemibold: TextStyle
+    get() = bodyMedium.copy(
+        fontWeight = FontWeight.W600,
+        lineHeight = 16.sp,
+        letterSpacing = (-0.09).sp
+    )
+
