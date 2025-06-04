@@ -25,7 +25,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import ru.evgenykuzakov.designsystem.theme.Rik_ttTheme
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.statistic.StatisticScreen
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import org.koin.compose.KoinContext
 
 
 class MainActivity : ComponentActivity() {
@@ -34,13 +34,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Rik_ttTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    contentColor = MaterialTheme.colorScheme.background
-                ) { innerPadding ->
-                    StatisticScreen(
-                        paddingValues = innerPadding
-                    )
+                KoinContext {
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        contentColor = MaterialTheme.colorScheme.background
+                    ) { innerPadding ->
+                        StatisticScreen(
+                            paddingValues = innerPadding
+                        )
+                    }
                 }
             }
         }
