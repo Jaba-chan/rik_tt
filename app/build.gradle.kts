@@ -48,8 +48,11 @@ android {
 }
 
 dependencies {
-    api(project(":core:designsystem"))
     api(project(":feature:statistic"))
+    api(project(":core:designsystem"))
+    api(project(":core:domain"))
+    api(project(":core:data"))
+    implementation(libs.koin.androidx.compose)
     implementation(libs.coil.compose)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)

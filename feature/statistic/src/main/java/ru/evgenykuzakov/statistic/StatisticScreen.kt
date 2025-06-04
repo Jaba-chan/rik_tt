@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.designsystem.theme.onlineIndicator
 import ru.evgenykuzakov.domain.model.File
+import ru.evgenykuzakov.domain.model.Sex
 import ru.evgenykuzakov.domain.model.User
 
 
@@ -92,7 +93,7 @@ fun StatisticScreen(
                     id = 1,
                     files = mutableListOf(File(1, "", "")),
                     age = 25,
-                    sex = "M",
+                    sex = Sex.MALE,
                     username = "ann.aeom",
                     isOnline = true
                 )

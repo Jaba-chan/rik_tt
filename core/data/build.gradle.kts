@@ -36,7 +36,7 @@ android {
 dependencies {
     api(project(":core:domain"))
     api(project(":core:network"))
-
+    implementation(libs.koin.androidx.compose)
     implementation(libs.ktor.client.core)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
