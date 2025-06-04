@@ -6,6 +6,6 @@ import ru.evgenykuzakov.domain.model.VisitorType
 
 fun StatisticDto.toDomain() = Statistic(
     userId = userId,
-    type = VisitorType.valueOf(type),
+    type = VisitorType.entries.first { it.type == type },
     dates = dates
 )

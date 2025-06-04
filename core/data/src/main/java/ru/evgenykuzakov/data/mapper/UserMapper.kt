@@ -7,7 +7,7 @@ import ru.evgenykuzakov.domain.model.User
 fun UserDto.toDomain() = User(
     id = id,
     username = username,
-    sex = Sex.valueOf(sex),
+    sex = Sex.entries.first { it.sex == sex },
     age = age,
     isOnline = isOnline,
     files = files.map{ it.toDomain() }
