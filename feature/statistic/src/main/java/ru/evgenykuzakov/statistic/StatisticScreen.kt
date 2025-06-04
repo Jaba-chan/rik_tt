@@ -1,8 +1,6 @@
 package ru.evgenykuzakov.statistic
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,17 +12,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
@@ -54,8 +55,18 @@ fun StatisticScreen(
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
+        Spacer(modifier = Modifier.height(32.dp))
+        HeadingCard(
+            headingText = stringResource(R.string.observers)
+        ) {
+            ObserversContent(
+                1356,
+                stringResource(R.string.count_of_observers_up),
+                arrowIconRes = R.drawable.observers_arrow_up,
+                graphImageRes = R.drawable.observers_up
+            )
+        }
         DefaultVerticalSpacer()
-
         PeriodSelector(
             list,
             1,
@@ -115,7 +126,7 @@ fun PeriodSelector(
 
 @Composable
 private fun DefaultVerticalSpacer() {
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(modifier = Modifier.height(28.dp))
 }
 
 @Composable
@@ -139,46 +150,56 @@ fun HeadingCard(
         Spacer(modifier = Modifier.height(12.dp))
         Card(
             modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            content = content
+            content = content,
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         )
     }
 
 }
 
 @Composable
-private fun ObserversContent() {
+private fun ObserversContent(
+    observersCount: Int,
+    graphDescription: String,
+    graphImageRes: Int,
+    arrowIconRes: Int
+) {
+    Row(
+        modifier = Modifier
+            .padding(
+                horizontal = 20.dp,
+                vertical = 16.dp
+            )
+    ) {
+        Image(
+            painter = painterResource(graphImageRes),
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.width(20.dp))
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row {
+                H2Text(text = observersCount.toString())
+                Spacer(modifier = Modifier.width(2.dp))
+                Icon(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    painter = painterResource(arrowIconRes),
+                    contentDescription = null
+                )
+            }
+            Text(
+                text = graphDescription,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.5f
+                )
+            )
+        }
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}

@@ -50,6 +50,7 @@ android {
 dependencies {
     api(project(":core:designsystem"))
     api(project(":feature:statistic"))
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
