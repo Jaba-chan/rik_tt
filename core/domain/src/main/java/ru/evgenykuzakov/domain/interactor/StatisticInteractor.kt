@@ -7,6 +7,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.evgenykuzakov.common.Resource
@@ -29,10 +31,15 @@ class StatisticInteractor(
     operator fun invoke(): Flow<Resource<StatisticUIState>> =
         getUsersUseCase().flatMapLatest { usersRes ->
             when (usersRes) {
-                is Resource.Loading -> flowOf(Resource.Loading())
-                is Resource.Error -> flowOf(Resource.Error(usersRes.message))
+                is Resource.Loading -> {
+                    println("StatisticInteractor getUsersUseCase Loading")
+                    flowOf(Resource.Loading())
+                }
+                is Resource.Error -> {
+                    println("StatisticInteractor getUsersUseCase Error ${usersRes.message}")
+                    flowOf(Resource.Error(usersRes.message))
+                }
                 is Resource.Success -> {
-
                     getStatisticsUseCase().map { statRes ->
                         when (statRes) {
                             is Resource.Loading -> Resource.Loading()
@@ -40,57 +47,31 @@ class StatisticInteractor(
                             is Resource.Success -> {
                                 val users = usersRes.data
                                 val stats = statRes.data
-                                withContext(Dispatchers.Default) {
-                                    coroutineScope {
-                                        val deferredVisitorsByData = async {
-                                            calcVisitorsByDate(stats = stats)
-                                        }
-                                        val deferredVisitors = async {
-                                            calcVisitorsByType(
-                                                stats = stats,
-                                                users = users,
-                                                type = VisitorType.VIEW
-                                            )
-                                        }
-                                        val deferredSubscribers = async {
-                                            calcVisitorsByType(
-                                                stats = stats,
-                                                users = users,
-                                                type = VisitorType.SUBSCRIPTION
-                                            )
-                                        }
-                                        val deferredUnsubscribers = async {
-                                            calcVisitorsByType(
-                                                stats = stats,
-                                                users = users,
-                                                type = VisitorType.UNSUBSCRIPTION
-                                            )
-                                        }
-                                        val deferredMostOftenVisitors = async {
-                                            calcMostOftenVisitors(stats = stats, users = users)
-                                        }
-                                        val deferredSexAgeStat = async {
-                                            calcSexAgeStat(stats = stats, users = users)
-                                        }
-                                        Resource.Success(
-                                            StatisticUIState(
-                                                visitorsByDate = deferredVisitorsByData.await(),
-                                                visitors = deferredVisitors.await(),
-                                                subscribers = deferredSubscribers.await(),
-                                                unsubscribers = deferredUnsubscribers.await(),
-                                                mostOftenVisitors = deferredMostOftenVisitors.await(),
-                                                ageSexStat = deferredSexAgeStat.await(),
-                                            )
-                                        )
-                                    }
-                                }
 
+                                val visitorsByDate = calcVisitorsByDate(stats = stats)
+                                val visitors = calcVisitorsByType(stats = stats, users = users, type = VisitorType.VIEW)
+                                val subscribers = calcVisitorsByType(stats = stats, users = users, type = VisitorType.SUBSCRIPTION)
+                                val unsubscribers = calcVisitorsByType(stats = stats, users = users, type = VisitorType.UNSUBSCRIPTION)
+                                val mostOftenVisitors = calcMostOftenVisitors(stats = stats, users = users)
+                                val ageSexStat = calcSexAgeStat(stats = stats, users = users)
+
+                                Resource.Success(
+                                    StatisticUIState(
+                                        visitorsByDate = visitorsByDate,
+                                        visitors = visitors,
+                                        subscribers = subscribers,
+                                        unsubscribers = unsubscribers,
+                                        mostOftenVisitors = mostOftenVisitors,
+                                        ageSexStat = ageSexStat,
+                                    )
+                                )
                             }
                         }
-                    }
+                    }.flowOn(Dispatchers.Default) // <--- ВАЖНО: переключаем поток для map!
                 }
             }
-        }
+        }.flowOn(Dispatchers.IO) // <--- ВАЖНО: переключаем поток для flatMapLatest!
+
 
 
     private fun calcMostOftenVisitors(

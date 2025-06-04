@@ -23,10 +23,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,73 +38,93 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import org.koin.androidx.compose.koinViewModel
+import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.designsystem.theme.onlineIndicator
 import ru.evgenykuzakov.domain.model.File
 import ru.evgenykuzakov.domain.model.Sex
+import ru.evgenykuzakov.domain.model.StatisticUIState
 import ru.evgenykuzakov.domain.model.User
 
 
 @Composable
 fun StatisticScreen(
+    viewModel: StatisticScreenViewModel = koinViewModel(),
     paddingValues: PaddingValues
 ) {
-
-    val list =
-        mutableListOf(R.string.by_days, R.string.by_weeks, R.string.by_months, R.string.by_days)
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = paddingValues.calculateTopPadding(),
-                bottom = paddingValues.calculateBottomPadding(),
-                start = 16.dp,
-                end = 16.dp
-            )
-
-    ) {
-        Spacer(modifier = Modifier.height(48.dp))
-        Text(
-            text = stringResource(R.string.statistics),
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        HeadingCard(
-            headingText = stringResource(R.string.observers)
-        ) {
-            ObserversContent(
-                1356,
-                stringResource(R.string.count_of_observers_up),
-                arrowIconRes = R.drawable.observers_arrow_up,
-                graphImageRes = R.drawable.observers_up
-            )
+    val state by viewModel.uiState.collectAsState()
+    when (state) {
+        is Resource.Error -> {
+            (state as Resource.Error<StatisticUIState>).message?.let { Text(text = it) }
         }
-        DefaultVerticalSpacer()
-        PeriodSelector(
-            list,
-            1,
-            {},
-            true
-        )
-        DefaultVerticalSpacer()
-        HeadingCard(
-            headingText = stringResource(R.string.most_often_visitors)
-        ) {
-            UserContent(
-                User(
-                    id = 1,
-                    files = mutableListOf(File(1, "", "")),
-                    age = 25,
-                    sex = Sex.MALE,
-                    username = "ann.aeom",
-                    isOnline = true
+        is Resource.Loading -> {
+            Text(text = "Loading")
+        }
+        is Resource.Success -> {
+            val stateData = (state as Resource.Success<StatisticUIState>).data
+            val list =
+                mutableListOf(
+                    R.string.by_days,
+                    R.string.by_weeks,
+                    R.string.by_months,
+                    R.string.by_days
                 )
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding(),
+                        start = 16.dp,
+                        end = 16.dp
+                    )
+
+            ) {
+                Spacer(modifier = Modifier.height(48.dp))
+                Text(
+                    text = stringResource(R.string.statistics),
+                    style = MaterialTheme.typography.displayLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                HeadingCard(
+                    headingText = stringResource(R.string.observers)
+                ) {
+                    ObserversContent(
+                        1356,
+                        stringResource(R.string.count_of_observers_up),
+                        arrowIconRes = R.drawable.observers_arrow_up,
+                        graphImageRes = R.drawable.observers_up
+                    )
+                }
+                DefaultVerticalSpacer()
+                PeriodSelector(
+                    list,
+                    1,
+                    {},
+                    true
+                )
+                DefaultVerticalSpacer()
+                HeadingCard(
+                    headingText = stringResource(R.string.most_often_visitors)
+                ) {
+                    repeat(stateData.mostOftenVisitors.size){ time ->
+                        UserContent(stateData.mostOftenVisitors[time])
+                        if (time < stateData.mostOftenVisitors.size - 1){
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 66.dp),
+                                color = MaterialTheme.colorScheme.background)
+                        }
+                    }
+
+                }
+            }
+
         }
-
-
     }
+
 
 }
 
@@ -252,8 +275,8 @@ private fun UserContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box {
-            Image(
-                painter = painterResource(R.drawable.test_avatar),
+            AsyncImage(
+                model = user.files.firstOrNull()?.url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
