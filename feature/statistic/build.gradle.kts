@@ -39,6 +39,7 @@ android {
 dependencies {
     api(project(":core:designsystem"))
     api(project(":core:domain"))
+    implementation(libs.coil.compose)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
