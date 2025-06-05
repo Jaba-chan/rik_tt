@@ -566,6 +566,7 @@ private fun AgeSexGroupStatistics(
             val statForWomen = statByAgeGroup.filter { it.sex == Sex.WOMAN }
 
             Column(
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 StatBySexItem(
@@ -595,23 +596,19 @@ private fun StatBySexItem(
     textStyle: TextStyle = MaterialTheme.typography.labelSmall
 ) {
     val textMeasurer = rememberTextMeasurer()
-    val textStartPadding = 10.dp
+
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
             .height(11.dp)
-            .padding(end = 16.dp)
+            .padding(end = 52.dp)
     ) {
         val deltaY = size.height / 2
         val deltaX = strokeWidth.toPx() / 2
         var percent = if (list.isNotEmpty())
             list[0].visitorsCount.toFloat() / totalPeople.toFloat()
         else 0f
-        val lineLength =
-            Offset(
-                percent * size.width - 3 * textStartPadding.toPx(),
-                size.height - deltaY
-            )
+        val lineLength = Offset(percent * size.width + deltaX, size.height - deltaY)
 
         drawLine(
             color = lineColor,
@@ -622,7 +619,7 @@ private fun StatBySexItem(
         )
         val text = if (list.isNotEmpty()) "${(percent * 100).roundToInt()}%" else "0%"
         drawCenteredVerticalText(
-            startPadding = textStartPadding + lineLength.x.toDp(),
+            startPadding = 10.dp + lineLength.x.toDp(),
             textMeasurer = textMeasurer,
             textToDraw = text,
             textStyle = textStyle,
