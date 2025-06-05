@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,8 +44,6 @@ import org.koin.androidx.compose.koinViewModel
 import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.designsystem.theme.onlineIndicator
-import ru.evgenykuzakov.domain.model.File
-import ru.evgenykuzakov.domain.model.Sex
 import ru.evgenykuzakov.domain.model.StatisticUIState
 import ru.evgenykuzakov.domain.model.User
 
@@ -55,24 +54,34 @@ fun StatisticScreen(
     paddingValues: PaddingValues
 ) {
     val state by viewModel.uiState.collectAsState()
+    val visitorsByDateOptions =
+        mutableListOf(
+            R.string.by_days,
+            R.string.by_weeks,
+            R.string.by_months,
+        )
+    val ageSexStatOptions = mutableListOf(
+        R.string.today,
+        R.string.week,
+        R.string.month,
+        R.string.all_times
+    )
+
     when (state) {
         is Resource.Error -> {
             (state as Resource.Error<StatisticUIState>).message?.let { Text(text = it) }
         }
+
         is Resource.Loading -> {
             Text(text = "Loading")
         }
+
         is Resource.Success -> {
             val stateData = (state as Resource.Success<StatisticUIState>).data
-            val list =
-                mutableListOf(
-                    R.string.by_days,
-                    R.string.by_weeks,
-                    R.string.by_months,
-                    R.string.by_days
-                )
+
             Column(
                 modifier = Modifier
+                    .verticalScroll(rememberScrollState())
                     .fillMaxSize()
                     .padding(
                         top = paddingValues.calculateTopPadding(),
@@ -90,10 +99,10 @@ fun StatisticScreen(
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 HeadingCard(
-                    headingText = stringResource(R.string.observers)
+                    headingText = stringResource(R.string.visitors)
                 ) {
                     ObserversContent(
-                        1356,
+                        stateData.visitors,
                         stringResource(R.string.count_of_observers_up),
                         arrowIconRes = R.drawable.observers_arrow_up,
                         graphImageRes = R.drawable.observers_up
@@ -101,8 +110,8 @@ fun StatisticScreen(
                 }
                 DefaultVerticalSpacer()
                 PeriodSelector(
-                    list,
-                    1,
+                    options = visitorsByDateOptions,
+                    0,
                     {},
                     true
                 )
@@ -110,15 +119,48 @@ fun StatisticScreen(
                 HeadingCard(
                     headingText = stringResource(R.string.most_often_visitors)
                 ) {
-                    repeat(stateData.mostOftenVisitors.size){ time ->
+                    repeat(stateData.mostOftenVisitors.size) { time ->
                         UserContent(stateData.mostOftenVisitors[time])
-                        if (time < stateData.mostOftenVisitors.size - 1){
+                        if (time < stateData.mostOftenVisitors.size - 1) {
                             HorizontalDivider(
                                 modifier = Modifier.padding(start = 66.dp),
-                                color = MaterialTheme.colorScheme.background)
+                                color = MaterialTheme.colorScheme.background
+                            )
                         }
                     }
 
+                }
+                DefaultVerticalSpacer()
+                HeadingCard(
+                    headingText = stringResource(R.string.sex_and_age),
+                    underHeadingContent = {
+                        PeriodSelector(
+                            options = ageSexStatOptions,
+                            onSelected = {},
+                            selectedPos = 0,
+                            isScrollable = true
+                        )
+                    }
+                ) {
+
+                }
+                DefaultVerticalSpacer()
+                HeadingCard(
+                    headingText = stringResource(R.string.observers),
+                ) {
+                    ObserversContent(
+                        stateData.subscribers,
+                        stringResource(R.string.new_subscribers_in_this_mouth),
+                        arrowIconRes = R.drawable.observers_arrow_up,
+                        graphImageRes = R.drawable.observers_up
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.background)
+                    ObserversContent(
+                        stateData.unsubscribers,
+                        stringResource(R.string.count_of_unsubscribers_in_this_mouth),
+                        arrowIconRes = R.drawable.observers_arrow_down,
+                        graphImageRes = R.drawable.observers_down
+                    )
                 }
             }
 
@@ -205,16 +247,21 @@ fun Body2Semibold(
 @Composable
 fun HeadingCard(
     headingText: String,
-    content: @Composable ColumnScope.() -> Unit
+    underHeadingContent: (@Composable ColumnScope.() -> Unit)? = null,
+    cardContent: @Composable ColumnScope.() -> Unit
 ) {
     Column {
         H2Text(text = headingText)
         Spacer(modifier = Modifier.height(12.dp))
+        if (underHeadingContent != null) {
+            underHeadingContent()
+            Spacer(modifier = Modifier.height(12.dp))
+        }
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            content = content,
+            content = cardContent,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
             )
@@ -238,6 +285,7 @@ private fun ObserversContent(
             )
     ) {
         Image(
+            modifier = Modifier.size(width = 95.dp, height = 50.dp),
             painter = painterResource(graphImageRes),
             contentDescription = null
         )
@@ -309,6 +357,7 @@ private fun UserContent(
         )
     }
 }
+
 
 
 

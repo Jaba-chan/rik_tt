@@ -67,10 +67,10 @@ class StatisticInteractor(
                                 )
                             }
                         }
-                    }.flowOn(Dispatchers.Default) // <--- ВАЖНО: переключаем поток для map!
+                    }.flowOn(Dispatchers.Default)
                 }
             }
-        }.flowOn(Dispatchers.IO) // <--- ВАЖНО: переключаем поток для flatMapLatest!
+        }.flowOn(Dispatchers.Default)
 
 
 
