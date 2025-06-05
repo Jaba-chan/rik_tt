@@ -601,13 +601,13 @@ private fun StatBySexItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(11.dp)
+            .padding(end = 52.dp)
     ) {
         val deltaY = size.height / 2
         val deltaX = strokeWidth.toPx() / 2
         var percent = if (list.isNotEmpty())
             list[0].visitorsCount.toFloat() / totalPeople.toFloat()
         else 0f
-        percent = 1f
         val lineLength = Offset(percent * size.width + deltaX, size.height - deltaY)
 
         drawLine(
