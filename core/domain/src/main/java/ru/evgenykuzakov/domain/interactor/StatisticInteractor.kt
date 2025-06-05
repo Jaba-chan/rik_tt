@@ -63,6 +63,8 @@ class StatisticInteractor(
                                         unsubscribers = unsubscribers,
                                         mostOftenVisitors = mostOftenVisitors,
                                         ageSexStat = ageSexStat,
+                                        menCount = countBySex(ageSexStat, Sex.MAN),
+                                        womenCount = countBySex(ageSexStat, Sex.WOMAN),
                                     )
                                 )
                             }
@@ -143,4 +145,7 @@ class StatisticInteractor(
         }
     }
 
+    private fun countBySex(stat: List<AgeSexStatistic>, sex: Sex): Int {
+        return stat.filter { it.sex == sex }.sumOf { it.visitorsCount}
+    }
 }
