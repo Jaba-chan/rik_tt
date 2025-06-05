@@ -4,8 +4,15 @@
     <string name="by_weeks">По неделям</string>
     <string name="by_months">По месяцам</string>
     <string name="statistics">Статистика</string>
-    <string name="observers">Посетители</string>
+    <string name="visitors">Посетители</string>
     <string name="count_of_observers_up">Количество посетителей в этом месяце выросло</string>
     <string name="most_often_visitors">Чаще всех посещают Ваш профиль</string>
     <string name="sex_and_age">Пол и возраст</string>
+    <string name="today">Сегодня</string>
+    <string name="week">Неделя</string>
+    <string name="month">Месяц</string>
+    <string name="all_times">Все время</string>
+    <string name="observers">Наблюдатели</string>
+    <string name="new_subscribers_in_this_mouth">Новые наблюдатели в этом месяце</string>
+    <string name="count_of_unsubscribers_in_this_mouth">Пользователей перестали за Вами наблюдать</string>
 </resources>
