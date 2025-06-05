@@ -1,5 +1,5 @@
 package ru.evgenykuzakov.domain.model
 
 enum class Sex(val sex: String) {
-    MALE("M"), FEMALE("W")
+    MAN("M"), WOMAN("W")
 }

@@ -1,5 +1,6 @@
 package ru.evgenykuzakov.statistic
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,10 +35,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
@@ -46,6 +53,7 @@ import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.designsystem.theme.onlineIndicator
 import ru.evgenykuzakov.domain.model.StatisticUIState
 import ru.evgenykuzakov.domain.model.User
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -122,10 +130,7 @@ fun StatisticScreen(
                     repeat(stateData.mostOftenVisitors.size) { time ->
                         UserContent(stateData.mostOftenVisitors[time])
                         if (time < stateData.mostOftenVisitors.size - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 66.dp),
-                                color = MaterialTheme.colorScheme.background
-                            )
+                            DefaultHorizontalDivider(modifier = Modifier.padding(start = 66.dp))
                         }
                     }
 
@@ -140,10 +145,16 @@ fun StatisticScreen(
                             selectedPos = 0,
                             isScrollable = true
                         )
+                    },
+                    cardContent = {
+                        val totalPeople = stateData.menCount + stateData.womenCount
+                        CircleChart(
+                            malePercent = stateData.menCount.toFloat() / totalPeople.toFloat(),
+                            femalePercent = stateData.womenCount.toFloat() / totalPeople.toFloat()
+                        )
+                        DefaultHorizontalDivider()
                     }
-                ) {
-
-                }
+                )
                 DefaultVerticalSpacer()
                 HeadingCard(
                     headingText = stringResource(R.string.observers),
@@ -154,7 +165,7 @@ fun StatisticScreen(
                         arrowIconRes = R.drawable.observers_arrow_up,
                         graphImageRes = R.drawable.observers_up
                     )
-                    HorizontalDivider(color = MaterialTheme.colorScheme.background)
+                    DefaultHorizontalDivider()
                     ObserversContent(
                         stateData.unsubscribers,
                         stringResource(R.string.count_of_unsubscribers_in_this_mouth),
@@ -230,6 +241,16 @@ fun H2Text(
         text = text,
         style = MaterialTheme.typography.displayMedium,
         color = MaterialTheme.colorScheme.onBackground
+    )
+}
+
+@Composable
+private fun DefaultHorizontalDivider(
+    modifier: Modifier = Modifier
+){
+    HorizontalDivider(
+        modifier = modifier.padding(start = 66.dp),
+        color = MaterialTheme.colorScheme.background
     )
 }
 
@@ -359,9 +380,100 @@ private fun UserContent(
 }
 
 
+@Composable
+fun CircleChart(
+    malePercent: Float,
+    femalePercent: Float,
+    modifier: Modifier = Modifier,
+    strokeWidth: Dp = 9.dp,
+    chartSize: Dp = 142.dp,
+    maleColor: Color = MaterialTheme.colorScheme.primary,
+    femaleColor: Color = MaterialTheme.colorScheme.secondary
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        DefaultVerticalSpacer()
+        Canvas(
+            modifier = modifier
+                .size(chartSize)
+        ) {
+            val diameter = size.minDimension - (strokeWidth).toPx()
+            val topLeft = Offset((size.width - diameter) / 2, (size.height - diameter) / 2)
+            val size = Size(diameter, diameter)
 
+            val space = 4f
+            drawArc(
+                color = femaleColor,
+                startAngle = -90f + space,
+                sweepAngle = 360 * femalePercent - 2 * space,
+                useCenter = false,
+                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round),
+                topLeft = topLeft,
+                size = size
+            )
+            drawArc(
+                color = maleColor,
+                startAngle = 360 * femalePercent - 90 + 2 * space,
+                sweepAngle = 360 * malePercent - 4 * space,
+                useCenter = false,
+                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round),
+                topLeft = topLeft,
+                size = size
+            )
+        }
+        Row(
+            modifier = Modifier
+                .padding(
+                    horizontal = 40.dp,
+                    vertical = 20.dp
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            ChartSummaryText(
+                group = stringResource(R.string.men),
+                percent = malePercent,
+                chartColor = maleColor
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ChartSummaryText(
+                group = stringResource(R.string.women),
+                percent = femalePercent,
+                chartColor = femaleColor
+            )
+        }
 
+    }
+}
 
+@Composable
+private fun ChartSummaryText(
+    group: String,
+    percent: Float,
+    chartColor: Color
+){
+    Spacer(modifier = Modifier
+        .size(10.dp)
+        .background(
+            color = chartColor,
+            shape = CircleShape
+        )
+    )
+    Spacer(modifier = Modifier.width(6.dp))
+    Text(
+        text = group,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+    Spacer(modifier = Modifier.width(6.dp))
+    Text(
+        text = (percent * 100).roundToInt() .toString() + "%",
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface
+    )
+}
 
 
 

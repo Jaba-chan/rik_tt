@@ -6,5 +6,7 @@ data class StatisticUIState(
     val subscribers: Int,
     val unsubscribers: Int,
     val mostOftenVisitors: List<User>,
-    val ageSexStat: List<AgeSexStatistic>
+    val ageSexStat: List<AgeSexStatistic>,
+    val menCount: Int,
+    val womenCount: Int
 )

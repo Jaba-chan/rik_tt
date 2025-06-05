@@ -15,4 +15,6 @@
     <string name="observers">Наблюдатели</string>
     <string name="new_subscribers_in_this_mouth">Новые наблюдатели в этом месяце</string>
     <string name="count_of_unsubscribers_in_this_mouth">Пользователей перестали за Вами наблюдать</string>
+    <string name="men">Мужчины</string>
+    <string name="women">Женщины</string>
 </resources>
