@@ -1,4 +1,5 @@
 [versions]
+minSdk = "26"
 accompanistSystemuicontroller = "0.27.0"
 agp = "8.6.1"
 kotlin = "2.1.0"
@@ -18,6 +19,7 @@ kotlinxSerializationJson = "1.8.0"
 kotlinxCoroutinesAndroid = "1.10.1"
 coil = "2.5.0"
 koinAndroidxCompose = "4.0.3"
+
 
 
 [libraries]

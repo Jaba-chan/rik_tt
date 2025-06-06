@@ -23,7 +23,9 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = White,
     onBackground = Black,
     onSurface = Black,
-    outline = Outline
+    outline = Outline,
+    onSurfaceVariant = Gray
+
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -36,6 +38,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = Black,
     onSurface = Black,
     outline = Outline,
+    onSurfaceVariant = Gray
 )
 
 val ColorScheme.onlineIndicator: Color
