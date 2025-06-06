@@ -1,6 +1,7 @@
 package ru.evgenykuzakov.statistic
 
-import androidx.compose.foundation.Canvas
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,26 +9,18 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -35,49 +28,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextMeasurer
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 import ru.evgenykuzakov.common.Resource
-import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.designsystem.theme.onlineIndicator
-import ru.evgenykuzakov.domain.model.AgeGroups
-import ru.evgenykuzakov.domain.model.AgeSexStatistic
-import ru.evgenykuzakov.domain.model.Sex
 import ru.evgenykuzakov.domain.model.StatisticUIState
 import ru.evgenykuzakov.domain.model.User
 import ru.evgenykuzakov.ui.Body2Semibold
 import ru.evgenykuzakov.ui.H2Text
 import ru.evgenykuzakov.ui.HeadingCard
-import kotlin.math.roundToInt
 
 
 @Composable
@@ -141,12 +109,31 @@ fun StatisticScreen(
                     )
                 }
                 DefaultVerticalSpacer()
-                PeriodSelector(
-                    options = visitorsByDateOptions,
-                    0,
-                    {},
-                    true
+                HeadingCard(
+                    headingText = null,
+                    underHeadingContent = {
+                        PeriodSelector(
+                            options = visitorsByDateOptions,
+                            0,
+                            {},
+                            true
+                        )
+                    },
+                    cardContent = {
+                        DefaultVerticalSpacer()
+                        Row(
+                            modifier = Modifier.padding(
+                                start = 16.dp,
+                                end = 32.dp
+                            )
+                        ) {
+                            LineChartView(
+                                axis = stateData.visitorsByDate
+                            )
+                        }
+                    }
                 )
+
                 DefaultVerticalSpacer()
                 HeadingCard(
                     headingText = stringResource(R.string.most_often_visitors)
@@ -296,12 +283,11 @@ private fun ObserversContent(
                     contentDescription = null
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = graphDescription,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(
-                    alpha = 0.5f
-                )
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -322,23 +308,15 @@ private fun UserContent(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(38.dp)
                     .clip(CircleShape)
+                    .size(38.dp)
             )
             if (user.isOnline) {
-                Box(
+                Image(
                     modifier = Modifier
-                        .size(8.dp)
-                        .align(Alignment.BottomEnd)
-                        .background(
-                            color = MaterialTheme.colorScheme.onlineIndicator,
-                            shape = CircleShape
-                        )
-                        .border(
-                            width = 1.dp,
-                            brush = SolidColor(MaterialTheme.colorScheme.surface),
-                            shape = CircleShape
-                        )
+                        .align(Alignment.BottomEnd),
+                    painter = painterResource(R.drawable.online_point),
+                    contentDescription = null
                 )
             }
         }

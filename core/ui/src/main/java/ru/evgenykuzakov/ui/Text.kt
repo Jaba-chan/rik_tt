@@ -9,17 +9,12 @@ import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 
 @Composable
 fun Body2Semibold(
-    includeFontPadding: Boolean = true,
     text: String,
     color: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyMediumSemibold.copy(
-            platformStyle = PlatformTextStyle(
-                includeFontPadding = includeFontPadding
-            )
-        ),
+        style = MaterialTheme.typography.bodyMediumSemibold,
         color = color
     )
 }
@@ -32,5 +27,16 @@ fun H2Text(
         text = text,
         style = MaterialTheme.typography.displayMedium,
         color = MaterialTheme.colorScheme.onBackground
+    )
+}
+
+@Composable
+fun Footnot13Med(
+    text: String,
+    color: Color = MaterialTheme.colorScheme.onSurface){
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = color
     )
 }

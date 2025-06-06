@@ -15,12 +15,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun HeadingCard(
-    headingText: String,
+    headingText: String? = null,
     underHeadingContent: (@Composable ColumnScope.() -> Unit)? = null,
     cardContent: @Composable ColumnScope.() -> Unit
 ) {
     Column {
-        H2Text(text = headingText)
+        if (headingText != null) {
+            H2Text(text = headingText)
+            Spacer(modifier = Modifier.height(12.dp))
+        }
         Spacer(modifier = Modifier.height(12.dp))
         if (underHeadingContent != null) {
             underHeadingContent()

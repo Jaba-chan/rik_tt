@@ -22,12 +22,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,6 +32,8 @@ import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.domain.model.AgeGroups
 import ru.evgenykuzakov.domain.model.AgeSexStatistic
 import ru.evgenykuzakov.domain.model.Sex
+import ru.evgenykuzakov.ui.Footnot13Med
+import ru.evgenykuzakov.ui.drawCenteredVerticalText
 import kotlin.math.roundToInt
 
 @Composable
@@ -135,17 +134,9 @@ private fun ChartSummaryText(
             )
     )
     Spacer(modifier = Modifier.width(6.dp))
-    Text(
-        text = group,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface
-    )
+    Footnot13Med(text = group,)
     Spacer(modifier = Modifier.width(6.dp))
-    Text(
-        text = (percent * 100).roundToInt().toString() + "%",
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface
-    )
+    Footnot13Med(text = (percent * 100).roundToInt().toString() + "%")
 }
 
 @Composable
@@ -261,20 +252,4 @@ private fun StatBySexItem(
     }
 }
 
-private fun DrawScope.drawCenteredVerticalText(
-    startPadding: Dp = 0.dp,
-    textMeasurer: TextMeasurer,
-    textToDraw: String,
-    textStyle: TextStyle,
-    textColor: Color
-) {
-    val text = textMeasurer.measure(
-        text = textToDraw,
-        style = textStyle
-    )
-    drawText(
-        topLeft = Offset(startPadding.toPx(), 0f),
-        textLayoutResult = text,
-        color = textColor
-    )
-}
+

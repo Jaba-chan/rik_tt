@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "ru.evgenykuzakov.rik_tt"
-        minSdk = 24
+        minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
