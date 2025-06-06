@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -28,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,7 +77,16 @@ fun StatisticScreen(
         }
 
         is Resource.Loading -> {
-            Text(text = "Loading")
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ){
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(32.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         is Resource.Success -> {
@@ -200,6 +213,8 @@ fun PeriodSelector(
     onSelected: (Int) -> Unit,
     isScrollable: Boolean = false
 ) {
+    // Заглушка на врямя
+    var selectedPosState by rememberSaveable { mutableIntStateOf(selectedPos) }
     Row(
         modifier = Modifier
             .then(
@@ -212,10 +227,10 @@ fun PeriodSelector(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         repeat(options.size) { time ->
-            val isSelected = selectedPos == time
+            val isSelected = selectedPosState == time
             if (isSelected) {
                 Button(
-                    onClick = { onSelected(time) },
+                    onClick = { selectedPosState = time },
                 ) {
                     Body2Semibold(
                         text = stringResource(options[time]),
@@ -224,7 +239,7 @@ fun PeriodSelector(
                 }
             } else {
                 OutlinedButton(
-                    onClick = { onSelected(time) },
+                    onClick = { selectedPosState = time },
                 ) {
                     Body2Semibold(text = stringResource(options[time]))
                 }
