@@ -3,6 +3,7 @@ package ru.evgenykuzakov.statistic
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.transformable
@@ -180,6 +181,9 @@ fun LineChartView(
                         color = legendColor,
                         shape = gap
                     )
+                    .clickable {
+                        selectedIndex = null
+                    }
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp)
