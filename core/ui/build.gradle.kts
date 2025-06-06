@@ -5,8 +5,8 @@ plugins {
 }
 
 android {
-    namespace = "ru.evgenykuzakov.statistic"
-    compileSdk = 35
+    namespace = "ru.evgenykuzakov.ui"
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 24
@@ -37,10 +37,7 @@ android {
 }
 
 dependencies {
-    api(project(":core:domain"))
-    api(project(":core:ui"))
-
-    implementation(libs.coil.compose)
+    api(project(":core:designsystem"))
     implementation(libs.koin.androidx.compose)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.core.ktx)
