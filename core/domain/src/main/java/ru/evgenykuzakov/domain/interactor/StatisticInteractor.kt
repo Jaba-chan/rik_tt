@@ -2,15 +2,11 @@ package ru.evgenykuzakov.domain.interactor
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.domain.model.AgeGroups
 import ru.evgenykuzakov.domain.model.AgeSexStatistic
@@ -93,17 +89,19 @@ class StatisticInteractor(
     private fun calcVisitorsByDate(
         stats: List<Statistic>
     ): List<VisitorsByDate> {
-        val usersPerDay = mutableMapOf<Int, MutableSet<Int>>()
+        val visitsPerDay = mutableMapOf<Int, Int>()
+
         stats
             .filter { it.type == VisitorType.VIEW }
             .forEach { stat ->
                 stat.dates.forEach { date ->
-                    val userSet = usersPerDay.getOrPut(date) { mutableSetOf() }
-                    userSet.add(stat.userId)
+                    visitsPerDay[date] = visitsPerDay.getOrDefault(date, 0) + 1
                 }
             }
 
-        return usersPerDay.mapValues { it.value.size }.map { VisitorsByDate(it.key, it.value) }
+        return visitsPerDay
+            .map { (date, count) -> VisitorsByDate(date, count) }
+            .sortedBy { it.date }
     }
 
     private fun calcVisitorsByType(
