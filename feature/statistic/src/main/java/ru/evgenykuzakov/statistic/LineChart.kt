@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -74,7 +73,8 @@ fun LineChartView(
     val density = LocalDensity.current
     val space: Dp = 40.dp
     val transformableState = TransformableState { _, panState, _ ->
-        scrolledBy = (scrolledBy + panState.x)
+        val pan = if (selectedIndex == null) panState.x else 0f
+        scrolledBy = (scrolledBy + pan)
             .coerceAtLeast(-coerceAtLeast)
             .coerceAtMost(with(density) { 16.dp.toPx() })
     }
@@ -85,7 +85,7 @@ fun LineChartView(
                     detectTapGestures { tapOffset ->
                         val clickedIndex = data.indices.minByOrNull { index ->
                             val x = index * space.toPx()
-                            kotlin.math.abs(x - tapOffset.x)
+                            kotlin.math.abs(x - tapOffset.x + scrolledBy)
                         }
                         selectedIndex = clickedIndex
                     }
@@ -96,13 +96,14 @@ fun LineChartView(
                 .fillMaxWidth()
 
         ) {
-            val width = space.toPx() * (data.size - 1) + 32.dp.toPx()
+            val spacing = space.toPx()
+            val width = spacing * (data.size - 1) + 32.dp.toPx()
             coerceAtLeast = width - size.width
             val gridHeightPx = gridHeight.toPx()
-            val spacing = space.toPx()
             val maxValue = (data.maxOrNull() ?: 0).toFloat()
             val gridCount = 3
-            val topGraphPadding = +6.dp.toPx()
+            val topGraphPadding = 6.dp.toPx()
+
             translate(left = scrolledBy) {
                 repeat(gridCount) { i ->
                     val y = gridHeightPx * i / (gridCount - 1) + topGraphPadding
@@ -158,12 +159,28 @@ fun LineChartView(
                         textStyle = legendStyle
                     )
                 }
+                selectedIndex?.let { index ->
+                    val x = (index * spacing)
+                    println(index)
+                    drawLine(
+                        color = graphColor,
+                        start = Offset(x, 0f),
+                        end = Offset(x, gridHeightPx + 7.dp.toPx()),
+                        strokeWidth = gridStrokeSize.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(
+                            floatArrayOf(
+                                7.dp.toPx(),
+                                5.dp.toPx()
+                            )
+                        )
+                    )
+                }
             }
 
         }
         selectedIndex?.let { index ->
             val xDp =
-                with(LocalDensity.current) { (index * space.toPx() - scrolledBy).toDp() }
+                with(LocalDensity.current) { (index * space.toPx() + scrolledBy).toDp()  }
             val gap = RoundedCornerShape(8.dp)
             Box(
                 modifier = Modifier
