@@ -7,7 +7,10 @@ data class AgeSexStatistic(
 )
 
 enum class ByAgeSexStatisticFilter {
-    DAY, WEEK, MONTH, ALL
+    DAY,
+    WEEK,
+    MONTH,
+    ALL
 }
 
 enum class AgeGroups(val range: IntRange) {
