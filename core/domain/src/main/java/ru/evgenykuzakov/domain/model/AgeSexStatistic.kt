@@ -5,3 +5,7 @@ data class AgeSexStatistic(
     val sex: Sex,
     val visitorsCount: Int
 )
+
+enum class ByAgeSexStatisticFilter {
+    DAY, WEEK, MONTH, ALL
+}
