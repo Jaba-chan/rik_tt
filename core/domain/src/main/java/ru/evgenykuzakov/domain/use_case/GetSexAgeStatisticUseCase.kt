@@ -23,7 +23,6 @@ class GetSexAgeStatisticUseCase {
         val usersById = users.associateBy { it.id }
         val counter = mutableMapOf<Pair<AgeGroups, Sex>, Int>()
 
-
         stats
             .filter { it.type == VisitorType.VIEW }
             .forEach { stat ->
@@ -48,13 +47,20 @@ class GetSexAgeStatisticUseCase {
                 }
             }
         emit(
-            counter.map { (key, count) ->
-                AgeSexStatistic(
-                    ageGroup = key.first,
-                    sex = key.second,
-                    visitorsCount = count
-                )
-            }
+            counter
+                .toList()
+                .sortedWith(
+                    compareBy(
+                    { it.first.first.ordinal },
+                    { it.first.second.ordinal }
+                )   )
+                .map { (key, count) ->
+                    AgeSexStatistic(
+                        ageGroup = key.first,
+                        sex = key.second,
+                        visitorsCount = count
+                    )
+                }
         )
     }.flowOn(Dispatchers.Default)
 }
