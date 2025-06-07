@@ -15,7 +15,7 @@ import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
 import ru.evgenykuzakov.domain.model.StatisticUIState
 import java.time.LocalDate
 
-class class StatisticViewModel(
+class StatisticScreenViewModel(
     private val dateStatisticsInteractor: DateStatisticsInteractor,
     private val visitorsByTypeInteractor: VisitorsByTypeInteractor,
     private val mostOftenVisitorsInteractor: MostOftenVisitorsInteractor,
