@@ -1,6 +1,12 @@
 package ru.evgenykuzakov.domain.model
 
-data class AgeSexStatistic(
+data class AgeSexStatisticResult(
+    val stats: List<AgeSexStat>,
+    val menCount: Int,
+    val womenCount: Int
+)
+
+data class AgeSexStat(
     val ageGroup: AgeGroups,
     val sex: Sex,
     val visitorsCount: Int

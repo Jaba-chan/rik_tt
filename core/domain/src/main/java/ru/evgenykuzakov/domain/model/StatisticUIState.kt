@@ -1,12 +1,14 @@
 package ru.evgenykuzakov.domain.model
 
+import ru.evgenykuzakov.common.Resource
+
 data class StatisticUIState(
-    val visitorsByDate: List<VisitorsByDate>,
-    val visitors: Int,
-    val subscribers: Int,
-    val unsubscribers: Int,
-    val mostOftenVisitors: List<User>,
-    val ageSexStat: List<AgeSexStatistic>,
-    val menCount: Int,
-    val womenCount: Int
+    val visitorsByDate: Resource<List<VisitorsByDate>> = Resource.Loading(),
+    val visitorsByType: Resource<List<VisitorsByType>> = Resource.Loading(),
+    val mostOftenVisitors: Resource<List<User>> = Resource.Loading(),
+    val sexAgeStatistic: Resource<List<AgeSexStatistic>> = Resource.Loading(),
+    val menCount: Int = 0,
+    val womenCount: Int = 0,
+    val dateFilter: ByDateStatisticFilter = ByDateStatisticFilter.DAY,
+    val ageSexFilter: ByAgeSexStatisticFilter = ByAgeSexStatisticFilter.DAY
 )

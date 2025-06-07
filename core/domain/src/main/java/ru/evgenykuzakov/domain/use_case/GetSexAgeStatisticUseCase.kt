@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import ru.evgenykuzakov.domain.model.AgeGroups
-import ru.evgenykuzakov.domain.model.AgeSexStatistic
+import ru.evgenykuzakov.domain.model.AgeSexStat
+import ru.evgenykuzakov.domain.model.AgeSexStatisticResult
 import ru.evgenykuzakov.domain.model.ByAgeSexStatisticFilter
 import ru.evgenykuzakov.domain.model.Sex
 import ru.evgenykuzakov.domain.model.Statistic
@@ -19,7 +20,7 @@ class GetSexAgeStatisticUseCase {
         filter: ByAgeSexStatisticFilter,
         users: List<User>,
         stats: List<Statistic>
-    ): Flow<List<AgeSexStatistic>> = flow {
+    ): Flow<AgeSexStatisticResult> = flow {
         val usersById = users.associateBy { it.id }
         val counter = mutableMapOf<Pair<AgeGroups, Sex>, Int>()
 
@@ -46,21 +47,29 @@ class GetSexAgeStatisticUseCase {
                     }
                 }
             }
+
+        val statsList = counter
+            .toList()
+            .sortedWith(compareBy(
+                { it.first.first.ordinal },
+                { it.first.second.ordinal }
+            ))
+            .map { (key, count) ->
+                AgeSexStat(
+                    ageGroup = key.first,
+                    sex = key.second,
+                    visitorsCount = count
+                )
+            }
+
+        val menCount = statsList.filter { it.sex == Sex.MAN }.sumOf { it.visitorsCount }
+        val womenCount = statsList.filter { it.sex == Sex.WOMAN }.sumOf { it.visitorsCount }
+
         emit(
-            counter
-                .toList()
-                .sortedWith(
-                    compareBy(
-                    { it.first.first.ordinal },
-                    { it.first.second.ordinal }
-                )   )
-                .map { (key, count) ->
-                    AgeSexStatistic(
-                        ageGroup = key.first,
-                        sex = key.second,
-                        visitorsCount = count
-                    )
-                }
+            AgeSexStatisticResult(
+                stats = statsList,
+                menCount = menCount,
+                womenCount = womenCount)
         )
     }.flowOn(Dispatchers.Default)
 }
