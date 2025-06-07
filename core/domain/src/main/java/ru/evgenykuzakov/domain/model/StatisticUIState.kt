@@ -6,9 +6,8 @@ data class StatisticUIState(
     val visitorsByDate: Resource<List<VisitorsByDate>> = Resource.Loading(),
     val visitorsByType: Resource<List<VisitorsByType>> = Resource.Loading(),
     val mostOftenVisitors: Resource<List<User>> = Resource.Loading(),
-    val sexAgeStatistic: Resource<List<AgeSexStatistic>> = Resource.Loading(),
-    val menCount: Int = 0,
-    val womenCount: Int = 0,
+    val sexAgeStatistic: Resource<List<AgeSexStatisticResult>> = Resource.Loading(),
+
     val dateFilter: ByDateStatisticFilter = ByDateStatisticFilter.DAY,
     val ageSexFilter: ByAgeSexStatisticFilter = ByAgeSexStatisticFilter.DAY
 )

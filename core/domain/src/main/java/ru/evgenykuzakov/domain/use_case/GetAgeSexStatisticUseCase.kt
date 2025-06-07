@@ -14,7 +14,7 @@ import ru.evgenykuzakov.domain.model.User
 import ru.evgenykuzakov.domain.model.VisitorType
 import java.time.LocalDate
 
-class GetSexAgeStatisticUseCase {
+class GetAgeSexStatisticUseCase {
     operator fun invoke(
         nowDate: LocalDate,
         filter: ByAgeSexStatisticFilter,
