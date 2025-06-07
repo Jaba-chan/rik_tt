@@ -30,7 +30,7 @@ class GetAgeSexStatisticUseCase {
                 val user = usersById[stat.userId]
                 if (user != null) {
                     val ageGroup = AgeGroups.entries.firstOrNull { user.age in it.range }
-                        ?: AgeGroups.GROUP_50plus
+                        ?: AgeGroups.GROUP_50PLUS
                     val key = ageGroup to user.sex
 
                     val count = stat.dates.count { date ->

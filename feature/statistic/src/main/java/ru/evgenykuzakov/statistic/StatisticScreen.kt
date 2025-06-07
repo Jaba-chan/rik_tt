@@ -126,6 +126,7 @@ fun StatisticScreen(
                         is Resource.Loading -> {}
                         is Resource.Success -> {
                             LineChartView(
+                                filter = uiState.dateFilter,
                                 axis = dateStat.data
                             )
                         }

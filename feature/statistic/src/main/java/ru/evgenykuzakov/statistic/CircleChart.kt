@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -153,7 +152,7 @@ private fun AgeGroupHeadings(
         val textMeasurer = rememberTextMeasurer()
         AgeGroups.entries.forEach {
             val text =
-                if (it != AgeGroups.GROUP_50plus)
+                if (it != AgeGroups.GROUP_50PLUS)
                     "${it.range.first}-${it.range.last + 1}"
                 else
                     "${it.range.first}>"

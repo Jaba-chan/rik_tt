@@ -42,6 +42,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
 import ru.evgenykuzakov.domain.model.DateStatistic
 import ru.evgenykuzakov.ui.Body2Semibold
 import ru.evgenykuzakov.ui.Footnot13Med
@@ -52,6 +53,7 @@ import java.util.Locale
 @Composable
 fun LineChartView(
     axis: List<DateStatistic>,
+    filter: ByDateStatisticFilter,
     gridStrokeSize: Dp = 1.dp,
     graphStrokeSize: Dp = 3.dp,
     pointsSize: Dp = 11.dp,
@@ -62,15 +64,20 @@ fun LineChartView(
     canvasBackgroundColor: Color = MaterialTheme.colorScheme.surface,
     graphColor: Color = MaterialTheme.colorScheme.primary
 ) {
+    val density = LocalDensity.current
     val data = axis.map { it.visitors }
     val labels = axis.map { it.date }
     val textMeasurer = rememberTextMeasurer()
-    var scrolledBy by remember { mutableFloatStateOf(0f) }
+    var scrolledBy by remember { mutableFloatStateOf(with(density) { 16.dp.toPx() }) }
     var coerceAtLeast by remember { mutableFloatStateOf(0f) }
     var selectedIndex by remember { mutableStateOf<Int?>(null) }
 
-    val density = LocalDensity.current
-    val space: Dp = 40.dp
+    val space= when (filter) {
+        ByDateStatisticFilter.DAY -> 40.dp
+        ByDateStatisticFilter.WEEK -> 80.dp
+        ByDateStatisticFilter.MONTH -> 60.dp
+    }
+
     val transformableState = TransformableState { _, panState, _ ->
         val pan = if (selectedIndex == null) panState.x else 0f
         scrolledBy = (scrolledBy + pan)
@@ -89,6 +96,7 @@ fun LineChartView(
                         selectedIndex = clickedIndex
                     }
                 }
+                .padding(start = 8.dp)
                 .transformable(transformableState)
                 .height(gridHeight + 2 * textTopPadding + legendStyle.lineHeight.value.dp)
                 .clipToBounds()
@@ -148,12 +156,21 @@ fun LineChartView(
                         center = Offset(x, y),
                         style = Stroke(width = graphStrokeSize.toPx())
                     )
+                    val label = when(filter){
+                        ByDateStatisticFilter.DAY -> labels[index].format(DateTimeFormatter.ofPattern("d.MM"))
+                        ByDateStatisticFilter.WEEK -> {
+                            val firstDayOfWeek = labels[index].format(DateTimeFormatter.ofPattern("d.MM "))
+                            val lastDayOfWeek = labels[index].plusDays(7).format(DateTimeFormatter.ofPattern("d.MM "))
+                            "$firstDayOfWeek-$lastDayOfWeek"
+                        }
+                        ByDateStatisticFilter.MONTH -> labels[index].format(DateTimeFormatter.ofPattern("MM.yyyy"))
+                    }
                     drawCenteredToPointText(
                         startPadding = x.toDp(),
                         topPadding = textTopPadding + topGraphPadding.toDp(),
                         canvasHeight = gridHeightPx.toDp(),
                         textMeasurer = textMeasurer,
-                        textToDraw = labels[index].format(DateTimeFormatter.ofPattern("d.MM")),
+                        textToDraw = label,
                         textColor = legendColor,
                         textStyle = legendStyle
                     )

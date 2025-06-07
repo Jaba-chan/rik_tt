@@ -27,5 +27,5 @@ enum class AgeGroups(val range: IntRange) {
     GROUP_31_35(31 until 35),
     GROUP_36_40(36 until 40),
     GROUP_40_50(40 until 50),
-    GROUP_50plus(50 until Int.MAX_VALUE)
+    GROUP_50PLUS(50 until Int.MAX_VALUE)
 }

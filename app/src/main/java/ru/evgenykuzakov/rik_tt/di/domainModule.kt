@@ -11,13 +11,15 @@ import ru.evgenykuzakov.domain.use_case.GetMostOftenVisitorsUseCase
 import ru.evgenykuzakov.domain.use_case.GetStatisticsUseCase
 import ru.evgenykuzakov.domain.use_case.GetUsersUseCase
 import ru.evgenykuzakov.domain.use_case.GetVisitorsByTypeUseCase
+import ru.evgenykuzakov.domain.use_case.GetVisitsPerDayUseCase
 
 val domainModule = module {
     single { GetUsersUseCase(get()) }
     single { GetStatisticsUseCase(get()) }
+    single { GetVisitsPerDayUseCase() }
 
     single { GetAgeSexStatisticUseCase() }
-    single { GetDateStatisticsUseCase() }
+    single { GetDateStatisticsUseCase(get()) }
     single { GetMostOftenVisitorsUseCase() }
     single { GetVisitorsByTypeUseCase() }
 
