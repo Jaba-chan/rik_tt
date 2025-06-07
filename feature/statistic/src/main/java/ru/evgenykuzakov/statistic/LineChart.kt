@@ -42,7 +42,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
-import ru.evgenykuzakov.domain.model.DateStatistics
+import ru.evgenykuzakov.domain.model.DateStatistic
 import ru.evgenykuzakov.ui.Body2Semibold
 import ru.evgenykuzakov.ui.Footnot13Med
 import java.time.LocalDate
@@ -51,7 +51,7 @@ import java.util.Locale
 
 @Composable
 fun LineChartView(
-    axis: List<DateStatistics>,
+    axis: List<DateStatistic>,
     gridStrokeSize: Dp = 1.dp,
     graphStrokeSize: Dp = 3.dp,
     pointsSize: Dp = 11.dp,
@@ -258,7 +258,7 @@ private fun Int.fromDate(): String {
     return "$day.$month"
 }
 
-private fun List<DateStatistics>.addSkippedDates(): List<DateStatistics> {
+private fun List<DateStatistic>.addSkippedDates(): List<DateStatistic> {
     val dateToVisitorsMap = this
         .groupBy { it.date.toLocalDate() }
         .mapValues { entry -> entry.value.sumOf { it.visitors } }
@@ -271,7 +271,7 @@ private fun List<DateStatistics>.addSkippedDates(): List<DateStatistics> {
     }.plus(maxDate)
         .map { date ->
             val formatted = "%02d%02d%04d".format(date.dayOfMonth, date.monthValue, date.year)
-            DateStatistics(
+            DateStatistic(
                 date = formatted.toInt(),
                 visitors = dateToVisitorsMap[date] ?: 0
             )

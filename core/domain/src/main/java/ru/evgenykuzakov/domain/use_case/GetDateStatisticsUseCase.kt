@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flowOn
 import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
 import ru.evgenykuzakov.domain.model.Statistic
 import ru.evgenykuzakov.domain.model.VisitorType
-import ru.evgenykuzakov.domain.model.DateStatistics
+import ru.evgenykuzakov.domain.model.DateStatistic
 import java.time.LocalDate
 
 class GetDateStatisticsUseCase {
@@ -15,7 +15,7 @@ class GetDateStatisticsUseCase {
         nowDate: LocalDate,
         filter: ByDateStatisticFilter,
         stats: List<Statistic>
-    ): Flow<List<DateStatistics>> = flow {
+    ): Flow<List<DateStatistic>> = flow {
         val visitsPerDay = mutableMapOf<LocalDate, Int>()
         stats
             .filter { it.type == VisitorType.VIEW }
@@ -33,7 +33,7 @@ class GetDateStatisticsUseCase {
                 .takeWhile { !it.isAfter(maxDate) }
                 .toList()
             val result = completeDateRange.map { date ->
-                DateStatistics(
+                DateStatistic(
                     date = date,
                     visitors = visitsPerDay[date] ?: 0
                 )
