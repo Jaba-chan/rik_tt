@@ -37,7 +37,7 @@ class StatisticScreenViewModel(
             dateStatisticsInteractor(nowDate, _uiState.value.dateFilter)
                 .collect { result ->
                     _uiState.update { state ->
-                        state.copy(visitorsByDate = result)
+                        state.copy(dateStatistic = result)
                     }
                 }
         }
@@ -70,7 +70,7 @@ class StatisticScreenViewModel(
             ageSexStatisticInteractor(nowDate, _uiState.value.ageSexFilter)
                 .collect { result ->
                     _uiState.update { state ->
-                        state.copy(sexAgeStatistic = result)
+                        state.copy(ageSexStatistic = result)
                     }
                 }
         }
