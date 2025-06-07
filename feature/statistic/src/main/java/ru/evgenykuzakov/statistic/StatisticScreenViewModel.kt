@@ -22,6 +22,10 @@ class StatisticScreenViewModel(
     private val ageSexStatisticInteractor: AgeSexStatisticInteractor
 ) : ViewModel() {
 
+    companion object {
+        private val sept1_2024: LocalDate = LocalDate.of(2024, 9, 1)
+
+    }
     private val _uiState = MutableStateFlow(StatisticUIState())
     val uiState: StateFlow<StatisticUIState> = _uiState
 
@@ -34,7 +38,7 @@ class StatisticScreenViewModel(
 
     private fun loadVisitorsByDate(nowDate: LocalDate = LocalDate.now()) {
         viewModelScope.launch {
-            dateStatisticsInteractor(nowDate, _uiState.value.dateFilter)
+            dateStatisticsInteractor(sept1_2024, _uiState.value.dateFilter)
                 .collect { result ->
                     _uiState.update { state ->
                         state.copy(dateStatistic = result)
@@ -67,7 +71,7 @@ class StatisticScreenViewModel(
 
     private fun loadSexAgeStatistic(nowDate: LocalDate = LocalDate.now()) {
         viewModelScope.launch {
-            ageSexStatisticInteractor(nowDate, _uiState.value.ageSexFilter)
+            ageSexStatisticInteractor(sept1_2024, _uiState.value.ageSexFilter)
                 .collect { result ->
                     _uiState.update { state ->
                         state.copy(ageSexStatistic = result)
@@ -76,13 +80,21 @@ class StatisticScreenViewModel(
         }
     }
 
-    fun onDateFilterChanged(newFilter: ByDateStatisticFilter) {
-        _uiState.update { it.copy(dateFilter = newFilter) }
+    fun onLineChartFilterChanged(newFilter: Int) {
+        _uiState.update {
+            it.copy(
+                dateFilter = ByDateStatisticFilter.entries[newFilter]
+            )
+        }
         loadVisitorsByDate()
     }
 
-    fun onAgeSexFilterChanged(newFilter: ByAgeSexStatisticFilter) {
-        _uiState.update { it.copy(ageSexFilter = newFilter) }
+    fun onCircleChartFilterChanged(newFilter: Int) {
+        _uiState.update {
+            it.copy(
+                ageSexFilter = ByAgeSexStatisticFilter.entries[newFilter]
+            )
+        }
         loadSexAgeStatistic()
     }
 }

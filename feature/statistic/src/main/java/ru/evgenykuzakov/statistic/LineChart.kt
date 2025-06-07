@@ -254,7 +254,3 @@ private fun DrawScope.drawCenteredToPointText(
         color = textColor
     )
 }
-
-fun LocalDate.toDayMonthNumeric(formatter: DateTimeFormatter): String {
-    return this.format(formatter)
-}

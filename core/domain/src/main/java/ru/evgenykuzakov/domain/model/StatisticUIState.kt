@@ -9,5 +9,5 @@ data class StatisticUIState(
     val ageSexStatistic: Resource<AgeSexStatisticResult> = Resource.Loading(),
 
     val dateFilter: ByDateStatisticFilter = ByDateStatisticFilter.DAY,
-    val ageSexFilter: ByAgeSexStatisticFilter = ByAgeSexStatisticFilter.DAY
+    val ageSexFilter: ByAgeSexStatisticFilter = ByAgeSexStatisticFilter.ALL
 )
