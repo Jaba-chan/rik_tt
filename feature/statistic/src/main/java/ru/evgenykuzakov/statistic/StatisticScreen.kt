@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,11 @@ fun StatisticScreen(
     paddingValues: PaddingValues
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val scrollState = rememberScrollState(initial = uiState.scrollPosition)
+
+    LaunchedEffect(scrollState.value) {
+        viewModel.updateScrollPosition(scrollState.value)
+    }
 
     val visitorsByDateOptions =
         mutableListOf(
@@ -63,7 +69,7 @@ fun StatisticScreen(
     )
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState(initial = ))
+            .verticalScroll(scrollState)
             .fillMaxSize()
             .padding(
                 top = paddingValues.calculateTopPadding(),

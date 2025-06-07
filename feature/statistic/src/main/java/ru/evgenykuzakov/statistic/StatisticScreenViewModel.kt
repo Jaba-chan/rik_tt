@@ -97,4 +97,8 @@ class StatisticScreenViewModel(
         }
         loadSexAgeStatistic()
     }
+
+    fun updateScrollPosition(newPosition: Int) {
+        _uiState.update { it.copy(scrollPosition = newPosition) }
+    }
 }
