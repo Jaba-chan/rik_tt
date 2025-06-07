@@ -1,9 +1,7 @@
 package ru.evgenykuzakov.domain.model
 
-import java.time.LocalDate
-
 data class Statistic(
-    val dates: List<LocalDate>,
+    val dates: List<Int>,
     val type: VisitorType,
     val userId: Int
 )
