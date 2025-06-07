@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.domain.model.AgeGroups
-import ru.evgenykuzakov.domain.model.AgeSexStatistic
+import ru.evgenykuzakov.domain.model.AgeSexStat
 import ru.evgenykuzakov.domain.model.Sex
 import ru.evgenykuzakov.ui.Footnot13Med
 import ru.evgenykuzakov.ui.drawCenteredVerticalText
@@ -38,7 +38,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CircleChart(
-    stat: List<AgeSexStatistic>,
+    stat: List<AgeSexStat>,
     totalPeople: Int,
     malePercent: Float,
     femalePercent: Float,
@@ -174,7 +174,7 @@ private fun AgeGroupHeadings(
 @Composable
 private fun AgeSexGroupStatistics(
     totalPeople: Int,
-    stat: List<AgeSexStatistic>,
+    stat: List<AgeSexStat>,
     maleColor: Color,
     femaleColor: Color
 ) {
@@ -213,7 +213,7 @@ private fun AgeSexGroupStatistics(
 @Composable
 private fun StatBySexItem(
     totalPeople: Int,
-    list: List<AgeSexStatistic>,
+    list: List<AgeSexStat>,
     lineColor: Color,
     strokeWidth: Dp = 5.dp,
     textColor: Color = MaterialTheme.colorScheme.onSurface,

@@ -115,7 +115,7 @@ fun StatisticScreen(
                     headingText = stringResource(R.string.visitors)
                 ) {
                     ObserversContent(
-                        stateData.visitors,
+                        stateData.visitorsByType,
                         stringResource(R.string.count_of_observers_up),
                         arrowIconRes = R.drawable.observers_arrow_up,
                         graphImageRes = R.drawable.observers_up

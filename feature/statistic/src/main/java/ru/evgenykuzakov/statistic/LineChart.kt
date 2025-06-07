@@ -62,9 +62,8 @@ fun LineChartView(
     canvasBackgroundColor: Color = MaterialTheme.colorScheme.surface,
     graphColor: Color = MaterialTheme.colorScheme.primary
 ) {
-    val fullAxis = axis.addSkippedDates()
-    val data = fullAxis.map { it.visitors }
-    val labels = fullAxis.map { it.date }
+    val data = axis.map { it.visitors }
+    val labels = axis.map { it.date }
     val textMeasurer = rememberTextMeasurer()
     var scrolledBy by remember { mutableFloatStateOf(0f) }
     var coerceAtLeast by remember { mutableFloatStateOf(0f) }
@@ -154,7 +153,7 @@ fun LineChartView(
                         topPadding = textTopPadding + topGraphPadding.toDp(),
                         canvasHeight = gridHeightPx.toDp(),
                         textMeasurer = textMeasurer,
-                        textToDraw = labels[index].fromDate(),
+                        textToDraw = labels[index].format(DateTimeFormatter.ofPattern("d.MM")),
                         textColor = legendColor,
                         textStyle = legendStyle
                     )
@@ -217,7 +216,12 @@ fun LineChartView(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Footnot13Med(
-                        text = labels[index].toString().toDayMonthName(),
+                        text = labels[index].format(
+                            DateTimeFormatter.ofPattern("" +
+                                    "d MMMM",
+                                Locale("ru")
+                            )
+                        ),
                         color = legendColor
                     )
                 }
@@ -251,49 +255,6 @@ private fun DrawScope.drawCenteredToPointText(
     )
 }
 
-private fun Int.fromDate(): String {
-    val str = this.toString().padStart(8, '0')
-    val day = str.substring(0, 2).toInt()
-    val month = str.substring(2, 4)
-    return "$day.$month"
-}
-
-private fun List<DateStatistic>.addSkippedDates(): List<DateStatistic> {
-    val dateToVisitorsMap = this
-        .groupBy { it.date.toLocalDate() }
-        .mapValues { entry -> entry.value.sumOf { it.visitors } }
-
-    val minDate = dateToVisitorsMap.keys.minOrNull()!!
-    val maxDate = dateToVisitorsMap.keys.maxOrNull()!!
-
-    val fullList = generateSequence(minDate) { date ->
-        if (date < maxDate) date.plusDays(1) else null
-    }.plus(maxDate)
-        .map { date ->
-            val formatted = "%02d%02d%04d".format(date.dayOfMonth, date.monthValue, date.year)
-            DateStatistic(
-                date = formatted.toInt(),
-                visitors = dateToVisitorsMap[date] ?: 0
-            )
-
-        }
-        .toList()
-
-    return fullList
-}
-
-fun Int.toLocalDate(): LocalDate {
-    val str = this.toString()
-    val dayLength = str.length - 6
-    val day = str.substring(0, dayLength).toInt()
-    val month = str.substring(dayLength, dayLength + 2).toInt()
-    val year = str.substring(dayLength + 2).toInt()
-
-    return LocalDate.of(year, month, day)
-}
-
-fun String.toDayMonthName(): String {
-    val date = this.toInt().toLocalDate()
-    val formatter = DateTimeFormatter.ofPattern("d MMMM", Locale("ru")) //Locale.getDefault()
-    return date.format(formatter)
+fun LocalDate.toDayMonthNumeric(formatter: DateTimeFormatter): String {
+    return this.format(formatter)
 }
