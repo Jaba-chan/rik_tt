@@ -2,7 +2,7 @@ package ru.evgenykuzakov.domain.model
 
 import java.time.LocalDate
 
-data class VisitorsByDate(
+data class DateStatistics(
     val date: LocalDate,
     val visitors: Int
 )
