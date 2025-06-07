@@ -61,18 +61,19 @@ fun CircleChart(
             val diameter = size.minDimension - (strokeWidth).toPx()
             val topLeft = Offset((size.width - diameter) / 2, (size.height - diameter) / 2)
             val size = Size(diameter, diameter)
-
-            val space = 4f
-            drawArc(
-                color = femaleColor,
-                startAngle = -90f + space,
-                sweepAngle = 360 * femalePercent - 2 * space,
-                useCenter = false,
-                style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round),
-                topLeft = topLeft,
-                size = size
-            )
-            drawArc(
+            val space = if (femalePercent == 1f || malePercent == 1f ) 0f else 4f
+            if (femalePercent > 0)
+                drawArc(
+                    color = femaleColor,
+                    startAngle = -90f + space,
+                    sweepAngle = 360 * femalePercent - 2 * space,
+                    useCenter = false,
+                    style = Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round),
+                    topLeft = topLeft,
+                    size = size
+                )
+            if (malePercent > 0)
+                drawArc(
                 color = maleColor,
                 startAngle = 360 * femalePercent - 90 + 2 * space,
                 sweepAngle = 360 * malePercent - 4 * space,
@@ -134,7 +135,7 @@ private fun ChartSummaryText(
             )
     )
     Spacer(modifier = Modifier.width(6.dp))
-    Footnot13Med(text = group,)
+    Footnot13Med(text = group)
     Spacer(modifier = Modifier.width(6.dp))
     Footnot13Med(text = (percent * 100).roundToInt().toString() + "%")
 }
@@ -153,7 +154,7 @@ private fun AgeGroupHeadings(
         AgeGroups.entries.forEach {
             val text =
                 if (it != AgeGroups.GROUP_50plus)
-                    "${it.range.first}-${it.range.last}"
+                    "${it.range.first}-${it.range.last + 1}"
                 else
                     "${it.range.first}>"
             Canvas(

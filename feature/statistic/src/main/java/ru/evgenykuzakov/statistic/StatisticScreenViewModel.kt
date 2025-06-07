@@ -23,7 +23,7 @@ class StatisticScreenViewModel(
 ) : ViewModel() {
 
     companion object {
-        private val sept1_2024: LocalDate = LocalDate.of(2024, 9, 1)
+        private val sept1_2024: LocalDate = LocalDate.of(2024, 9, 9)
 
     }
     private val _uiState = MutableStateFlow(StatisticUIState())

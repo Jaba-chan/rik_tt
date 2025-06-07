@@ -36,11 +36,12 @@ class GetAgeSexStatisticUseCase {
                     val count = stat.dates.count { date ->
                         when (filter) {
                             ByAgeSexStatisticFilter.DAY -> date.isEqual(nowDate)
-                            ByAgeSexStatisticFilter.WEEK -> date.isAfter(nowDate.minusDays(7)) || date.isEqual(nowDate)
-                            ByAgeSexStatisticFilter.MONTH -> date.isAfter(nowDate.minusMonths(1)) || date.isEqual(nowDate)
+                            ByAgeSexStatisticFilter.WEEK -> date.isAfter(nowDate.minusDays(7)) && date.isBefore(nowDate.plusDays(1))
+                            ByAgeSexStatisticFilter.MONTH -> date.isAfter(nowDate.minusMonths(1)) && date.isBefore(nowDate.plusDays(1))
                             ByAgeSexStatisticFilter.ALL -> true
                         }
                     }
+                    println("GetAgeSexStatisticUseCase: ${filter.name} $count")
                     if (count > 0) {
                         val currentCount = counter.getOrDefault(key, 0)
                         counter[key] = currentCount + count
