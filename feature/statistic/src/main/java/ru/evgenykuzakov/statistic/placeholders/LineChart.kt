@@ -66,7 +66,7 @@ fun LineChartView(
     graphStrokeSize: Dp = 3.dp,
     pointsSize: Dp = 11.dp,
     textPadding: PaddingValues = PaddingValues(vertical = 12.dp),
-    topGraphPadding: Dp = 6.dp,
+    topGraphPadding: Dp = 20.dp,
     startScroll: Dp = 16.dp,
     gridIntervalSize: Dp = 7.dp,
     gridIntervalSpace: Dp = 5.dp,
@@ -118,7 +118,7 @@ fun LineChartView(
                 }
                 .transformable(transformableState)
                 .height(
-                    height
+                    height  + topGraphPadding
                             + textPadding.calculateTopPadding()
                             + textPadding.calculateBottomPadding()
                             + legendStyle.lineHeight.value.dp

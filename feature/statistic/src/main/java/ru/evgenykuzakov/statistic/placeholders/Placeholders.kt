@@ -39,6 +39,16 @@ internal fun DefaultVerticalSpacer() {
     Spacer(modifier = Modifier.height(28.dp))
 }
 
+@Composable
+internal fun LargeSpacer() {
+    Spacer(modifier = Modifier.height(48.dp))
+}
+
+
+@Composable
+internal fun MediumSpacer() {
+    Spacer(modifier = Modifier.height(32.dp))
+}
 
 @Composable
 internal fun DefaultHorizontalDivider(
@@ -106,7 +116,9 @@ internal fun ObserversContent(
             )
     ) {
         Image(
-            modifier = Modifier.size(width = 95.dp, height = 50.dp),
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .size(width = 95.dp, height = 50.dp),
             painter = painterResource(graphImageRes),
             contentDescription = null
         )

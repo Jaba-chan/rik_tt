@@ -1,7 +1,9 @@
 package ru.evgenykuzakov.statistic.placeholders
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -50,7 +52,7 @@ fun LineChartItem(
             )
         },
         cardContent = {
-            DefaultVerticalSpacer()
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .padding(
@@ -60,7 +62,7 @@ fun LineChartItem(
             ) {
                 when (val dateStat = uiState.dateStatistic) {
                     is Resource.Error -> {}
-                    is Resource.Loading -> {}
+                    is Resource.Loading -> Box(modifier = Modifier.height(208.dp))
                     is Resource.Success -> {
                         LineChartView(
                             filter = uiState.dateFilter,
@@ -97,7 +99,7 @@ fun CircleChartItem(
         cardContent = {
             when (val ageSexStatistic = uiState.ageSexStatistic) {
                 is Resource.Error -> {}
-                is Resource.Loading -> {}
+                is Resource.Loading -> Box(modifier = Modifier.height(567.dp))
                 is Resource.Success -> {
                     val men = ageSexStatistic.data.menCount
                     val women = ageSexStatistic.data.womenCount
@@ -137,11 +139,11 @@ fun CardVisitorsItem(
     ) {
         when (val visitors = uiState.visitorsByType) {
             is Resource.Error -> {}
-            is Resource.Loading -> {}
+            is Resource.Loading -> Box(modifier = Modifier.height(98.dp))
             is Resource.Success -> {
                 ObserversContent(
-                    visitors.data.view.count,
-                    stringResource(R.string.count_of_observers_up),
+                    observersCount = visitors.data.view.count,
+                    graphDescription = stringResource(R.string.count_of_observers_up),
                     arrowIconRes = R.drawable.observers_arrow_up,
                     graphImageRes = R.drawable.observers_up
                 )
@@ -159,7 +161,7 @@ fun MostOftenVisitors(
     ) {
         when(val mostOftenVisitors = uiState.mostOftenVisitors){
             is Resource.Error -> {}
-            is Resource.Loading -> {}
+            is Resource.Loading -> Box(modifier = Modifier.height(186.dp))
             is Resource.Success ->
                 repeat(mostOftenVisitors.data.size) { time ->
                     UserContent(mostOftenVisitors.data[time])
@@ -180,18 +182,18 @@ fun ObserversCardItem(
     ) {
         when (val visitors = uiState.visitorsByType) {
             is Resource.Error -> {}
-            is Resource.Loading -> {}
+            is Resource.Loading -> Box(modifier = Modifier.height(200.dp))
             is Resource.Success -> {
                 ObserversContent(
-                    visitors.data.subscribers.count,
-                    stringResource(R.string.new_subscribers_in_this_mouth),
+                    observersCount = visitors.data.subscribers.count,
+                    graphDescription = stringResource(R.string.new_subscribers_in_this_mouth),
                     arrowIconRes = R.drawable.observers_arrow_up,
                     graphImageRes = R.drawable.observers_up
                 )
                 DefaultHorizontalDivider()
                 ObserversContent(
-                    visitors.data.unsubscribers.count,
-                    stringResource(R.string.count_of_unsubscribers_in_this_mouth),
+                    observersCount = visitors.data.unsubscribers.count,
+                    graphDescription = stringResource(R.string.count_of_unsubscribers_in_this_mouth),
                     arrowIconRes = R.drawable.observers_arrow_down,
                     graphImageRes = R.drawable.observers_down
                 )
@@ -202,7 +204,9 @@ fun ObserversCardItem(
 
 sealed class StatisticScreenItem {
     data object Header : StatisticScreenItem()
-    data class  Spacer(val height: Dp) : StatisticScreenItem()
+    data object MediumSpacer : StatisticScreenItem()
+    data object LargeSpacer : StatisticScreenItem()
+    data object DefaultSpacer : StatisticScreenItem()
     data object VisitorsCard : StatisticScreenItem()
     data object LineChart : StatisticScreenItem()
     data object MostOftenVisitors : StatisticScreenItem()

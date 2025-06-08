@@ -25,7 +25,6 @@ fun HeadingCard(
             H2Text(text = headingText)
             Spacer(modifier = Modifier.height(12.dp))
         }
-        Spacer(modifier = Modifier.height(12.dp))
         if (underHeadingContent != null) {
             underHeadingContent()
             Spacer(modifier = Modifier.height(12.dp))
