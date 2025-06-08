@@ -24,9 +24,6 @@ class StatisticScreenViewModel(
     private val visitorsByTypeInteractor: VisitorsByTypeInteractor,
     private val mostOftenVisitorsInteractor: MostOftenVisitorsInteractor,
     private val ageSexStatisticInteractor: AgeSexStatisticInteractor,
-    private val getUsersUseCase: GetUsersUseCase,
-    private val getStatisticsUseCase: GetStatisticsUseCase,
-
     ) : ViewModel() {
 
     companion object {
@@ -36,11 +33,6 @@ class StatisticScreenViewModel(
     private val _uiState = MutableStateFlow(StatisticUIState())
     val uiState: StateFlow<StatisticUIState> = _uiState
 
-    private val usersFlow = getUsersUseCase()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, Resource.Loading())
-
-    private val statisticsFlow = getStatisticsUseCase()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, Resource.Loading())
 
     init {
         loadVisitorsByDate()

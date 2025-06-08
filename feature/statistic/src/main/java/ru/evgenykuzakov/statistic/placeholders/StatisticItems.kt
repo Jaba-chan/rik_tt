@@ -19,6 +19,7 @@ import ru.evgenykuzakov.statistic.R
 import ru.evgenykuzakov.statistic.StatisticUIState
 import ru.evgenykuzakov.ui.H2Text
 import ru.evgenykuzakov.ui.HeadingCard
+import ru.evgenykuzakov.ui.LoadingContent
 
 
 @Composable
@@ -61,7 +62,7 @@ fun LineChartItem(
             ) {
                 when (val dateStat = uiState.dateStatistic) {
                     is Resource.Error -> {}
-                    is Resource.Loading -> Box(modifier = Modifier.height(208.dp))
+                    is Resource.Loading -> LoadingContent(modifier = Modifier.height(208.dp))
                     is Resource.Success -> {
                         LineChartView(
                             filter = uiState.dateFilter,
@@ -98,7 +99,7 @@ fun CircleChartItem(
         cardContent = {
             when (val ageSexStatistic = uiState.ageSexStatistic) {
                 is Resource.Error -> {}
-                is Resource.Loading -> Box(modifier = Modifier.height(567.dp))
+                is Resource.Loading -> LoadingContent(modifier = Modifier.height(567.dp))
                 is Resource.Success -> {
                     val men = ageSexStatistic.data.menCount
                     val women = ageSexStatistic.data.womenCount
@@ -138,7 +139,7 @@ fun CardVisitorsItem(
     ) {
         when (val visitors = uiState.visitorsByType) {
             is Resource.Error -> {}
-            is Resource.Loading -> Box(modifier = Modifier.height(98.dp))
+            is Resource.Loading -> LoadingContent(modifier = Modifier.height(98.dp))
             is Resource.Success -> {
                 ObserversContent(
                     observersCount = visitors.data.view.count,
@@ -160,7 +161,7 @@ fun MostOftenVisitors(
     ) {
         when(val mostOftenVisitors = uiState.mostOftenVisitors){
             is Resource.Error -> {}
-            is Resource.Loading -> Box(modifier = Modifier.height(186.dp))
+            is Resource.Loading -> LoadingContent(modifier = Modifier.height(186.dp))
             is Resource.Success ->
                 repeat(mostOftenVisitors.data.size) { time ->
                     UserContent(mostOftenVisitors.data[time])
@@ -181,7 +182,7 @@ fun ObserversCardItem(
     ) {
         when (val visitors = uiState.visitorsByType) {
             is Resource.Error -> {}
-            is Resource.Loading -> Box(modifier = Modifier.height(200.dp))
+            is Resource.Loading -> LoadingContent(modifier = Modifier.height(200.dp))
             is Resource.Success -> {
                 ObserversContent(
                     observersCount = visitors.data.subscribers.count,

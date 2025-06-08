@@ -19,6 +19,7 @@ import org.koin.androidx.compose.koinViewModel
 import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.statistic.placeholders.CardVisitorsItem
 import ru.evgenykuzakov.statistic.placeholders.CircleChartItem
+import ru.evgenykuzakov.statistic.placeholders.DefaultVerticalSpacer
 import ru.evgenykuzakov.statistic.placeholders.HeaderItem
 import ru.evgenykuzakov.statistic.placeholders.LargeSpacer
 import ru.evgenykuzakov.statistic.placeholders.LineChartItem
@@ -69,7 +70,6 @@ fun StatisticScreen(
                 start = 16.dp,
                 end = 16.dp
             ),
-        verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
         itemsIndexed(
             items = screenItems,
@@ -108,7 +108,7 @@ fun StatisticScreen(
                     }
                 )
                 is StatisticScreenItem.ObserversCard -> ObserversCardItem(uiState)
-                is StatisticScreenItem.DefaultSpacer -> StatisticScreenItem.DefaultSpacer
+                is StatisticScreenItem.DefaultSpacer -> DefaultVerticalSpacer()
                 is StatisticScreenItem.MediumSpacer -> MediumSpacer()
                 is StatisticScreenItem.LargeSpacer -> LargeSpacer()
             }
