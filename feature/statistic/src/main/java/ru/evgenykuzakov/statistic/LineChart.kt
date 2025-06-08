@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextMeasurer
@@ -42,6 +44,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
@@ -91,8 +94,8 @@ fun LineChartView(
 
     val startDelta = when (filter) {
         ByDateStatisticFilter.DAY -> 0.dp
-        ByDateStatisticFilter.WEEK -> 8.dp
-        ByDateStatisticFilter.MONTH -> 8.dp
+        ByDateStatisticFilter.WEEK -> 16.dp
+        ByDateStatisticFilter.MONTH -> 16.dp
     }
 
     val transformableState = TransformableState { _, panState, _ ->
@@ -117,9 +120,9 @@ fun LineChartView(
                 .transformable(transformableState)
                 .height(
                     height
-                        + textPadding.calculateTopPadding()
-                        + textPadding.calculateBottomPadding()
-                        + legendStyle.lineHeight.value.dp
+                            + textPadding.calculateTopPadding()
+                            + textPadding.calculateBottomPadding()
+                            + legendStyle.lineHeight.value.dp
                 )
                 .clipToBounds()
                 .fillMaxWidth()
@@ -140,12 +143,12 @@ fun LineChartView(
             coerceAtLeast = width - size.width
             val maxValue = (data.maxOrNull() ?: 0).toFloat()
 
-            translate(left = scrolledBy) {
+            translate(left = scrolledBy + startDeltaPx) {
                 repeat(gridCount) { i ->
                     val y = heightPx * i / (gridCount - 1) + topGraphPaddingPx
                     drawLine(
                         color = legendColor,
-                        start = Offset(gridIntervalSizePx / 2, y),
+                        start = Offset(-startDeltaPx, y),
                         end = Offset(width, y),
                         strokeWidth = gridStrokeSizePx,
                         pathEffect = PathEffect.dashPathEffect(
@@ -193,7 +196,7 @@ fun LineChartView(
                     }
 
                     drawCenteredToPointText(
-                        startPadding = x.toDp() + startDelta,
+                        startPadding = x.toDp(),
                         topPadding = textPadding.calculateTopPadding() + topGraphPadding,
                         canvasHeight = heightPx.toDp(),
                         textMeasurer = textMeasurer,
@@ -204,7 +207,7 @@ fun LineChartView(
                 }
                 selectedIndex?.let { index ->
                     if( data[index] < 0) return@let
-                    val x = (index * spacing)
+                    val x = (index * spacing) + startDeltaPx
                     drawLine(
                         color = graphColor,
                         start = Offset(x, 0f),
@@ -226,15 +229,19 @@ fun LineChartView(
             val xDp =
                 with(LocalDensity.current) { (index * space.toPx() + scrolledBy).toDp() }
             val gap = RoundedCornerShape(8.dp)
+            var boxWidth by remember { mutableIntStateOf(0) }
             Box(
                 modifier = Modifier
                     .height(72.dp)
-                    .offset(
-                        x = (xDp - 40.dp)
-                            .coerceAtLeast(0.dp)
-                            .coerceAtMost(coerceAtLeast.dp),
-                        y = 0.dp
-                    )
+                    .offset {
+                        val boxCoerceAtMost = space * data.size - with(density) { coerceAtLeast.toDp() + boxWidth.toDp() }
+                        IntOffset(
+                            x = ((xDp - 40.dp)
+                                .coerceAtLeast(0.dp)
+                                .coerceAtMost(boxCoerceAtMost).roundToPx()),
+                                    y = 0
+                        )
+                    }
                     .background(
                         color = canvasBackgroundColor,
                         shape = gap
@@ -247,10 +254,12 @@ fun LineChartView(
                     .clickable {
                         selectedIndex = null
                     }
+                    .onGloballyPositioned { coordinates ->
+                        boxWidth = coordinates.size.width
+                    }
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     val context = LocalContext.current
                     val visitors = context.resources.getQuantityString(
@@ -262,6 +271,7 @@ fun LineChartView(
                         text = visitors,
                         color = graphColor
                     )
+                    Spacer(modifier = Modifier.height(8.dp))
                     Footnot13Med(
                         text = labels[index].format(
                             DateTimeFormatter.ofPattern(
@@ -293,6 +303,7 @@ private fun DrawScope.drawCenteredToPointText(
         text = textToDraw,
         style = textStyle
     )
+    println(textToDraw)
     drawText(
         topLeft = Offset(
             startPadding.toPx() - text.size.width / 2,
@@ -346,11 +357,9 @@ private fun LocalDate.produceExtraDate(
         ByDateStatisticFilter.DAY -> if (isHead) this.minusDays(position.toLong()) else this.plusDays(
             position.toLong()
         )
-
         ByDateStatisticFilter.WEEK -> if (isHead) this.minusDays(position.toLong() * 7) else this.plusDays(
             position.toLong() * 7
         )
-
         ByDateStatisticFilter.MONTH -> if (isHead) this.minusMonths(position.toLong()) else this.plusMonths(
             position.toLong()
         )
@@ -362,9 +371,7 @@ private fun LocalDate.toLabel(
 ): String{
     return when (filter) {
         ByDateStatisticFilter.DAY -> this.format(
-            DateTimeFormatter.ofPattern(
-                "d.MM"
-            )
+            DateTimeFormatter.ofPattern("d.MM")
         )
         ByDateStatisticFilter.WEEK -> {
             val firstDayOfWeek =
@@ -374,9 +381,7 @@ private fun LocalDate.toLabel(
             "$firstDayOfWeek-$lastDayOfWeek"
         }
         ByDateStatisticFilter.MONTH -> this.format(
-            DateTimeFormatter.ofPattern(
-                "MM.yyyy"
-            )
+            DateTimeFormatter.ofPattern("MM.yyyy")
         )
     }
 }
