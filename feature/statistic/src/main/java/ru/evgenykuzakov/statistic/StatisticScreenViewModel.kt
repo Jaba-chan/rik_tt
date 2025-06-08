@@ -3,20 +3,15 @@ package ru.evgenykuzakov.statistic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.domain.interactor.AgeSexStatisticInteractor
 import ru.evgenykuzakov.domain.interactor.DateStatisticsInteractor
 import ru.evgenykuzakov.domain.interactor.MostOftenVisitorsInteractor
 import ru.evgenykuzakov.domain.interactor.VisitorsByTypeInteractor
 import ru.evgenykuzakov.domain.model.ByAgeSexStatisticFilter
 import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
-import ru.evgenykuzakov.domain.use_case.GetStatisticsUseCase
-import ru.evgenykuzakov.domain.use_case.GetUsersUseCase
 import java.time.LocalDate
 
 class StatisticScreenViewModel(
