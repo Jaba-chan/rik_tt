@@ -91,21 +91,23 @@ fun StatisticScreen(
             when (item) {
                 is StatisticScreenItem.Header -> HeaderItem()
                 is StatisticScreenItem.VisitorsCard -> CardVisitorsItem(uiState)
-                is StatisticScreenItem.LineChart -> LineChartItem(
-                    uiState = uiState,
-                    onFilterChanged = viewModel::onLineChartFilterChanged
+                is StatisticScreenItem.LineChart ->
+                    LineChartItem(
+                        uiState = uiState,
+                        onFilterChanged = viewModel::onLineChartFilterChanged
                 )
                 is StatisticScreenItem.MostOftenVisitors -> {
                     MostOftenVisitors(uiState)
                 }
-                is StatisticScreenItem.CircleChart -> CircleChartItem(
-                    uiState = uiState,
-                    onFilterChanged = {
-                        savedScrollIndex.intValue = listState.firstVisibleItemIndex
-                        savedScrollOffset.intValue = listState.firstVisibleItemScrollOffset
-                        viewModel.onCircleChartFilterChanged(it)
-                    }
-                )
+                is StatisticScreenItem.CircleChart ->
+                    CircleChartItem(
+                        uiState = uiState,
+                        onFilterChanged = {
+                            savedScrollIndex.intValue = listState.firstVisibleItemIndex
+                            savedScrollOffset.intValue = listState.firstVisibleItemScrollOffset
+                            viewModel.onCircleChartFilterChanged(it)
+                        }
+                    )
                 is StatisticScreenItem.ObserversCard -> ObserversCardItem(uiState)
                 is StatisticScreenItem.DefaultSpacer -> DefaultVerticalSpacer()
                 is StatisticScreenItem.MediumSpacer -> MediumSpacer()

@@ -209,8 +209,8 @@ fun LineChartView(
                     val x = (index * spacing) + startDeltaPx
                     drawLine(
                         color = graphColor,
-                        start = Offset(x, 0f),
-                        end = Offset(x, heightPx + gridIntervalSizePx),
+                        start = Offset(x, gridIntervalSizePx),
+                        end = Offset(x, heightPx + topGraphPaddingPx),
                         strokeWidth = gridStrokeSizePx,
                         pathEffect = PathEffect.dashPathEffect(
                             floatArrayOf(
