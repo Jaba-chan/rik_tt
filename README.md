@@ -1,3 +1,21 @@
-![image](https://github.com/user-attachments/assets/0d401117-b8bd-401e-b8de-0250e8d0818e)
-![image](https://github.com/user-attachments/assets/63b78275-bd2e-49c1-9cd9-279da7b8c22c)
-![image](https://github.com/user-attachments/assets/8622b840-94e7-456f-a86f-8d3f1cffc605)
+#Краткое summary по экрану.
+##- Посетители считаются по дням/неделям/месяцам от текущего дня (за текущий выбрана дата 9.09.2024)
+##- По нелялям подпись: первый день недели - конечный, по месяцам/: MM.YYYY
+##- График можно скроллить, если не отображается подсказка
+##- Имена числительные в подсказке склоняются по правилам русского языка
+##- Подсказка не выхолит за пределы графика.
+##- График пол и возраст считается по дням/неделям/месяцам/всё время
+##- Добавлена группа 0-18, так как в данных был user с возрастом 15 лет
+##- Если за период пусто, то отображается текст "Пока пусто"
+##- При смене фильтра кнопка становится полностью видима.
+##- Некоторые размеры макета подкорректированны до ближайшего /4
+##- Несколько разных серых цветов на карточках сведены к onSurfaceVariant
+![image](https://github.com/user-attachments/assets/bf60d10d-ec3b-4225-bdeb-88009d6eaf8b)
+![image](https://github.com/user-attachments/assets/14783fde-6552-42a5-961f-f11c7de77664)
+![image](https://github.com/user-attachments/assets/ea0aeb95-2d75-4bf7-ad74-9ef3dcdf7a7c)
+![image](https://github.com/user-attachments/assets/5e31d38f-5c76-41f8-8a97-96ee9476f455)
+![image](https://github.com/user-attachments/assets/7e529ea2-1416-452f-a440-a5f992353470)
+![image](https://github.com/user-attachments/assets/eaad2df9-6ef4-48fd-8269-eae3375f8e7c)
+
+
+
