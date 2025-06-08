@@ -1,5 +1,6 @@
 package ru.evgenykuzakov.ui
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +33,8 @@ fun HeadingCard(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight(),
+                .wrapContentHeight()
+                .animateContentSize(),
             content = cardContent,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface

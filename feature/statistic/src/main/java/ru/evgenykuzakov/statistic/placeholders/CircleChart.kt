@@ -1,4 +1,4 @@
-package ru.evgenykuzakov.statistic
+package ru.evgenykuzakov.statistic.placeholders
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import ru.evgenykuzakov.designsystem.theme.bodyMediumSemibold
 import ru.evgenykuzakov.domain.model.AgeGroups
 import ru.evgenykuzakov.domain.model.AgeSexStat
 import ru.evgenykuzakov.domain.model.Sex
+import ru.evgenykuzakov.statistic.R
 import ru.evgenykuzakov.ui.Footnot13Med
 import ru.evgenykuzakov.ui.drawCenteredVerticalText
 import kotlin.math.roundToInt

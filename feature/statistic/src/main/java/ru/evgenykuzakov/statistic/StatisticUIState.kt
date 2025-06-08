@@ -1,6 +1,12 @@
-package ru.evgenykuzakov.domain.model
+package ru.evgenykuzakov.statistic
 
 import ru.evgenykuzakov.common.Resource
+import ru.evgenykuzakov.domain.model.AgeSexStatisticResult
+import ru.evgenykuzakov.domain.model.ByAgeSexStatisticFilter
+import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
+import ru.evgenykuzakov.domain.model.DateStatistic
+import ru.evgenykuzakov.domain.model.User
+import ru.evgenykuzakov.domain.model.VisitorsByTypeResult
 
 data class StatisticUIState(
     val dateStatistic: Resource<List<DateStatistic>> = Resource.Loading(),

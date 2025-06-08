@@ -1,46 +1,28 @@
 package ru.evgenykuzakov.statistic
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
-import ru.evgenykuzakov.common.Resource
-import ru.evgenykuzakov.domain.model.User
-import ru.evgenykuzakov.ui.Body2Semibold
-import ru.evgenykuzakov.ui.H2Text
-import ru.evgenykuzakov.ui.HeadingCard
+import ru.evgenykuzakov.statistic.placeholders.CardVisitorsItem
+import ru.evgenykuzakov.statistic.placeholders.CircleChartItem
+import ru.evgenykuzakov.statistic.placeholders.HeaderItem
+import ru.evgenykuzakov.statistic.placeholders.LineChartItem
+import ru.evgenykuzakov.statistic.placeholders.MostOftenVisitors
+import ru.evgenykuzakov.statistic.placeholders.ObserversCardItem
+import ru.evgenykuzakov.statistic.placeholders.StatisticScreenItem
 
 
 @Composable
@@ -49,319 +31,85 @@ fun StatisticScreen(
     paddingValues: PaddingValues
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState(initial = uiState.scrollPosition)
+    val listState = rememberLazyListState()
 
-    LaunchedEffect(scrollState.value) {
-        viewModel.updateScrollPosition(scrollState.value)
+
+    val screenItems = buildList {
+        add(StatisticScreenItem.Spacer(height = 48.dp))
+        add(StatisticScreenItem.Header)
+        add(StatisticScreenItem.VisitorsCard)
+        add(StatisticScreenItem.LineChart)
+        add(StatisticScreenItem.MostOftenVisitors)
+        add(StatisticScreenItem.CircleChart)
+        add(StatisticScreenItem.ObserversCard)
+        add(StatisticScreenItem.Spacer(height = 32.dp))
     }
 
-    val visitorsByDateOptions =
-        mutableListOf(
-            R.string.by_days,
-            R.string.by_weeks,
-            R.string.by_months,
-        )
-    val ageSexStatOptions = mutableListOf(
-        R.string.today,
-        R.string.week,
-        R.string.month,
-        R.string.all_times
-    )
-    Column(
+    LazyColumn(
+        state = listState,
         modifier = Modifier
-            .verticalScroll(scrollState)
             .fillMaxSize()
             .padding(
                 top = paddingValues.calculateTopPadding(),
                 bottom = paddingValues.calculateBottomPadding(),
                 start = 16.dp,
                 end = 16.dp
-            )
-
-    ) {
-        Spacer(modifier = Modifier.height(48.dp))
-        Text(
-            text = stringResource(R.string.statistics),
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        HeadingCard(
-            headingText = stringResource(R.string.visitors)
-        ) {
-            when (val visitors = uiState.visitorsByType) {
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
-                is Resource.Success -> {
-                    ObserversContent(
-                        visitors.data.view.count,
-                        stringResource(R.string.count_of_observers_up),
-                        arrowIconRes = R.drawable.observers_arrow_up,
-                        graphImageRes = R.drawable.observers_up
-                    )
-                }
-            }
-        }
-        DefaultVerticalSpacer()
-        HeadingCard(
-            headingText = null,
-            underHeadingContent = {
-                PeriodSelector(
-                    options = visitorsByDateOptions,
-                    selectedPos = uiState.dateFilter.ordinal,
-                    onSelected = { viewModel.onLineChartFilterChanged(it) },
-                    true
-                )
-            },
-            cardContent = {
-                DefaultVerticalSpacer()
-                Row(
-                    modifier = Modifier.padding(
-                        start = 16.dp,
-                        end = 32.dp
-                    )
-                ) {
-                    when (val dateStat = uiState.dateStatistic) {
-                        is Resource.Error -> {}
-                        is Resource.Loading -> {}
-                        is Resource.Success -> {
-                            LineChartView(
-                                filter = uiState.dateFilter,
-                                axis = dateStat.data
-                            )
-                        }
-                    }
-                }
-            }
-        )
-
-        DefaultVerticalSpacer()
-        HeadingCard(
-            headingText = stringResource(R.string.most_often_visitors)
-        ) {
-            when (val mostOftenVisitors = uiState.mostOftenVisitors) {
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
-                is Resource.Success ->
-                    repeat(mostOftenVisitors.data.size) { time ->
-                        UserContent(mostOftenVisitors.data[time])
-                        if (time < mostOftenVisitors.data.size - 1) {
-                            DefaultHorizontalDivider(modifier = Modifier.padding(start = 66.dp))
-                        }
-                    }
-            }
-        }
-        DefaultVerticalSpacer()
-        HeadingCard(
-            headingText = stringResource(R.string.sex_and_age),
-            underHeadingContent = {
-                PeriodSelector(
-                    options = ageSexStatOptions,
-                    selectedPos = uiState.ageSexFilter.ordinal,
-                    onSelected = { viewModel.onCircleChartFilterChanged(it) },
-                    true
-                )
-            },
-            cardContent = {
-                when (val ageSexStatistic = uiState.ageSexStatistic) {
-                    is Resource.Error -> {}
-                    is Resource.Loading -> {}
-                    is Resource.Success -> {
-                        val men = ageSexStatistic.data.menCount
-                        val women = ageSexStatistic.data.womenCount
-                        val totalPeople = men + women
-                        if (totalPeople > 0)
-                            CircleChart(
-                                totalPeople = totalPeople,
-                                stat = ageSexStatistic.data.stats,
-                                malePercent = men.toFloat() / totalPeople.toFloat(),
-                                femalePercent = women.toFloat() / totalPeople.toFloat()
-                            )
-                        else
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(100.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                H2Text(
-                                    text = stringResource(R.string.now_empty),
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                    }
-                }
-            }
-        )
-        DefaultVerticalSpacer()
-        HeadingCard(
-            headingText = stringResource(R.string.observers),
-        ) {
-            when (val visitors = uiState.visitorsByType) {
-                is Resource.Error -> {}
-                is Resource.Loading -> {}
-                is Resource.Success -> {
-                    ObserversContent(
-                        visitors.data.subscribers.count,
-                        stringResource(R.string.new_subscribers_in_this_mouth),
-                        arrowIconRes = R.drawable.observers_arrow_up,
-                        graphImageRes = R.drawable.observers_up
-                    )
-                    DefaultHorizontalDivider()
-                    ObserversContent(
-                        visitors.data.unsubscribers.count,
-                        stringResource(R.string.count_of_unsubscribers_in_this_mouth),
-                        arrowIconRes = R.drawable.observers_arrow_down,
-                        graphImageRes = R.drawable.observers_down
-                    )
-                }
-            }
-        }
-        Spacer(modifier = Modifier.height(32.dp))
-    }
-
-}
-
-@Composable
-fun PeriodSelector(
-    options: List<Int>,
-    selectedPos: Int,
-    onSelected: (Int) -> Unit,
-    isScrollable: Boolean = false
-) {
-    Row(
-        modifier = Modifier
-            .then(
-                if (isScrollable) {
-                    Modifier.horizontalScroll(rememberScrollState())
-                } else {
-                    Modifier
-                }
             ),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
-        repeat(options.size) { time ->
-            val isSelected = selectedPos == time
-            if (isSelected) {
-                Button(
-                    onClick = { onSelected(time) },
-                ) {
-                    Body2Semibold(
-                        text = stringResource(options[time]),
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
+        items(
+            items = screenItems,
+            key = { it.hashCode() },
+            contentType = { item ->
+                when (item) {
+                    is StatisticScreenItem.Header -> StatisticContentType.Header
+                    is StatisticScreenItem.Spacer -> when (item.height) {
+                        48.dp -> StatisticContentType.TopSpacer
+                        else -> StatisticContentType.BottomSpacer
+                    }
+                    is StatisticScreenItem.VisitorsCard -> StatisticContentType.CardVisitors
+                    is StatisticScreenItem.LineChart -> StatisticContentType.Graph
+                    is StatisticScreenItem.MostOftenVisitors -> StatisticContentType.List
+                    is StatisticScreenItem.CircleChart -> StatisticContentType.Graph
+                    is StatisticScreenItem.ObserversCard -> StatisticContentType.CardObservers
                 }
-            } else {
-                OutlinedButton(
-                    onClick = { onSelected(time) },
-                ) {
-                    Body2Semibold(text = stringResource(options[time]))
+            }
+
+        ){ item ->
+            when (item) {
+                is StatisticScreenItem.Header -> HeaderItem()
+                is StatisticScreenItem.Spacer -> Spacer(
+                    modifier = Modifier.height(item.height)
+                )
+                is StatisticScreenItem.VisitorsCard -> CardVisitorsItem(uiState)
+                is StatisticScreenItem.LineChart -> LineChartItem(
+                    uiState = uiState,
+                    onFilterChanged = viewModel::onLineChartFilterChanged
+                )
+
+                is StatisticScreenItem.MostOftenVisitors -> {
+                    MostOftenVisitors(uiState)
                 }
-            }
 
-        }
-
-    }
-}
-
-@Composable
-internal fun DefaultVerticalSpacer() {
-    Spacer(modifier = Modifier.height(28.dp))
-}
-
-
-@Composable
-internal fun DefaultHorizontalDivider(
-    modifier: Modifier = Modifier
-) {
-    HorizontalDivider(
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.background
-    )
-}
-
-@Composable
-private fun ObserversContent(
-    observersCount: Int,
-    graphDescription: String,
-    graphImageRes: Int,
-    arrowIconRes: Int
-) {
-    Row(
-        modifier = Modifier
-            .padding(
-                horizontal = 20.dp,
-                vertical = 16.dp
-            )
-    ) {
-        Image(
-            modifier = Modifier.size(width = 95.dp, height = 50.dp),
-            painter = painterResource(graphImageRes),
-            contentDescription = null
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row {
-                H2Text(text = observersCount.toString())
-                Spacer(modifier = Modifier.width(2.dp))
-                Image(
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    painter = painterResource(arrowIconRes),
-                    contentDescription = null
+                is StatisticScreenItem.CircleChart -> CircleChartItem(
+                    uiState = uiState,
+                    onFilterChanged = viewModel::onCircleChartFilterChanged
                 )
+                is StatisticScreenItem.ObserversCard -> ObserversCardItem(uiState)
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = graphDescription,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
 
-@Composable
-private fun UserContent(
-    user: User,
-) {
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box {
-            AsyncImage(
-                model = user.files.firstOrNull()?.url,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(38.dp)
-            )
-            if (user.isOnline) {
-                Image(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd),
-                    painter = painterResource(R.drawable.online_point),
-                    contentDescription = null
-                )
-            }
-        }
-        Spacer(modifier = Modifier.width(12.dp))
-        Body2Semibold(text = "${user.username}, ${user.age}")
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(R.drawable.ic_arrow),
-            contentDescription = null,
-        )
-    }
+sealed class StatisticContentType {
+    data object Header : StatisticContentType()
+    data object CardVisitors : StatisticContentType()
+    data object CardObservers : StatisticContentType()
+    data object Graph : StatisticContentType()
+    data object List : StatisticContentType()
+    data object TopSpacer : StatisticContentType()
+    data object BottomSpacer : StatisticContentType()
 }
-
-
-
 
 
 

@@ -1,4 +1,4 @@
-package ru.evgenykuzakov.statistic
+package ru.evgenykuzakov.statistic.placeholders
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.TransformableState
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.transformable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,9 +47,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.coerceAtMost
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
 import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
 import ru.evgenykuzakov.domain.model.DateStatistic
+import ru.evgenykuzakov.statistic.R
 import ru.evgenykuzakov.ui.Body2Semibold
 import ru.evgenykuzakov.ui.Footnot13Med
 import java.time.LocalDate

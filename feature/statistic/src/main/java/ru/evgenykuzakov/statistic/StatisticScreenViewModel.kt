@@ -12,7 +12,6 @@ import ru.evgenykuzakov.domain.interactor.MostOftenVisitorsInteractor
 import ru.evgenykuzakov.domain.interactor.VisitorsByTypeInteractor
 import ru.evgenykuzakov.domain.model.ByAgeSexStatisticFilter
 import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
-import ru.evgenykuzakov.domain.model.StatisticUIState
 import java.time.LocalDate
 
 class StatisticScreenViewModel(
