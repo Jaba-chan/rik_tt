@@ -17,6 +17,7 @@
     <string name="count_of_unsubscribers_in_this_mouth">Пользователей перестали за Вами наблюдать</string>
     <string name="men">Мужчины</string>
     <string name="women">Женщины</string>
+    <string name="now_empty">Пока пусто</string>
 
     <plurals name="visitors_count">
         <item quantity="zero">%d посетителей</item>

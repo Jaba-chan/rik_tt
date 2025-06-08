@@ -21,12 +21,13 @@ fun Body2Semibold(
 
 @Composable
 fun H2Text(
-    text: String
+    text: String,
+    color: Color =  MaterialTheme.colorScheme.onBackground
 ) {
     Text(
         text = text,
         style = MaterialTheme.typography.displayMedium,
-        color = MaterialTheme.colorScheme.onBackground
+        color = color
     )
 }
 
