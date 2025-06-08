@@ -3,23 +3,31 @@ package ru.evgenykuzakov.statistic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ru.evgenykuzakov.common.Resource
 import ru.evgenykuzakov.domain.interactor.AgeSexStatisticInteractor
 import ru.evgenykuzakov.domain.interactor.DateStatisticsInteractor
 import ru.evgenykuzakov.domain.interactor.MostOftenVisitorsInteractor
 import ru.evgenykuzakov.domain.interactor.VisitorsByTypeInteractor
 import ru.evgenykuzakov.domain.model.ByAgeSexStatisticFilter
 import ru.evgenykuzakov.domain.model.ByDateStatisticFilter
+import ru.evgenykuzakov.domain.use_case.GetStatisticsUseCase
+import ru.evgenykuzakov.domain.use_case.GetUsersUseCase
 import java.time.LocalDate
 
 class StatisticScreenViewModel(
     private val dateStatisticsInteractor: DateStatisticsInteractor,
     private val visitorsByTypeInteractor: VisitorsByTypeInteractor,
     private val mostOftenVisitorsInteractor: MostOftenVisitorsInteractor,
-    private val ageSexStatisticInteractor: AgeSexStatisticInteractor
-) : ViewModel() {
+    private val ageSexStatisticInteractor: AgeSexStatisticInteractor,
+    private val getUsersUseCase: GetUsersUseCase,
+    private val getStatisticsUseCase: GetStatisticsUseCase,
+
+    ) : ViewModel() {
 
     companion object {
         private val sept1_2024: LocalDate = LocalDate.of(2024, 9, 9)
@@ -27,6 +35,12 @@ class StatisticScreenViewModel(
     }
     private val _uiState = MutableStateFlow(StatisticUIState())
     val uiState: StateFlow<StatisticUIState> = _uiState
+
+    private val usersFlow = getUsersUseCase()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Resource.Loading())
+
+    private val statisticsFlow = getStatisticsUseCase()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Resource.Loading())
 
     init {
         loadVisitorsByDate()
@@ -95,9 +109,5 @@ class StatisticScreenViewModel(
             )
         }
         loadSexAgeStatistic()
-    }
-
-    fun updateScrollPosition(newPosition: Int) {
-        _uiState.update { it.copy(scrollPosition = newPosition) }
     }
 }
